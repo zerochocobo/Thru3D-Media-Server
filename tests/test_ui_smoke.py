@@ -399,7 +399,7 @@ class UiSmokeTests(unittest.TestCase):
             # Dashboard: server bar and feature cards.
             self.assertFalse(window.dashboard.server_button.icon().isNull())
             self.assertEqual(window.dashboard.server_button.iconSize().width(), 22)
-            self.assertIn("https://wapok.com", window.dashboard.project_link.text())
+            self.assertIn("https://thru3d.com", window.dashboard.project_link.text())
             self.assertIn(window.i18n.t("project.url_label"), window.dashboard.project_link.text())
             self.assertFalse(window.dashboard.project_link.openExternalLinks())
             self.assertEqual(

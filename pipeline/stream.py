@@ -18,6 +18,7 @@ from typing import AsyncIterator
 
 import numpy as np
 
+from config import RVM_START_PRIME_FRAMES
 from pipeline.ffmpeg_io import DecoderProcess, EncoderProcess, VideoInfo, probe
 from pipeline.matting import Matter
 from utils.logger import get
@@ -347,7 +348,7 @@ class PassthroughStream:
 
     # ------------- Queue -------------
     async def iter_bytes(self) -> AsyncIterator[bytes]:
-        self.matter.reset_state()
+        self.matter.reset_state(prime_frames=RVM_START_PRIME_FRAMES)
         self.info = probe(self.src)
         self.dec = DecoderProcess(self.src, self.start_sec, self.info, max_fps=self.max_fps)
         self.output_fps = float(self.dec.out_info.fps or self.info.fps or 0.0)

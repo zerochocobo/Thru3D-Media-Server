@@ -529,7 +529,7 @@ def iter_pynv_passthrough_annexb_frames(
 
         if _cancelled():
             return
-        matter.reset_state()
+        matter.reset_state(prime_frames=config.RVM_START_PRIME_FRAMES)
         log.info(
             "PyNv frame stream begin: source=%s mode=%s start=%.3f frames=%d size=%dx%d fps=%.3f cap_bytes=%d schedule=%d",
             source.name, mode, max(0.0, float(start_sec or 0.0)), target, out_w, out_h, fps,
@@ -2581,10 +2581,10 @@ class PyNvPassthroughStream(GpuSubtitleOverlay):
             self._stderr_reader.start()
             if self._video_mux is not None:
                 threading.Thread(target=self._video_stderr_loop, name="pynv-video-stderr", daemon=True).start()
-            self.matter.reset_state()
+            self.matter.reset_state(prime_frames=config.RVM_START_PRIME_FRAMES)
             log.info(
-                "[PYNV][%d] RVM recurrent state reset at %.3fs; first frames after seek may show alpha warmup jitter",
-                self.sid, self.start_sec,
+                "[PYNV][%d] RVM recurrent state reset at %.3fs; priming %d passes on the first frame",
+                self.sid, self.start_sec, config.RVM_START_PRIME_FRAMES,
             )
             alpha_packer = None
             if self.output_mode == "alpha":

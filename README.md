@@ -4,7 +4,7 @@
 
 English | [中文](README.zh-CN.md) | [日本語](README.ja-JP.md)
 
-Website: [https://wapok.com](https://wapok.com)
+Website: [https://thru3d.com](https://thru3d.com)
 
 Thru3D Media Server aims to make every VR video passthrough-capable, enabling mixed reality (MR).
 

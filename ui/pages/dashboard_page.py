@@ -56,7 +56,7 @@ DASHBOARD_WIDTH = DASHBOARD_WIDTHS[MIN_GRID_COLUMNS]
 DASHBOARD_HEIGHT = 524
 EXTRA_ROW_HEIGHT = CARD_HEIGHT + 8
 SERVER_ICON_SIZE = 22
-PROJECT_URL = "https://wapok.com"
+PROJECT_URL = "https://thru3d.com"
 
 
 def _server_button_icon(running: bool) -> QIcon:

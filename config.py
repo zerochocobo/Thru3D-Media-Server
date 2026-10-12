@@ -475,6 +475,17 @@ RVM_SCENE_COOLDOWN = int(_env("RVM_SCENE_COOLDOWN", 24))
 #   EMA weight on the reference histogram for slow within-scene drift tracking.
 RVM_SCENE_REF_EMA = float(_env("RVM_SCENE_REF_EMA", 0.95))
 
+# PT_RVM_START_PRIME_FRAMES:
+#   Extra RVM passes over the first frame after a stream (re)start resets the
+#   recurrent state. A cold state flickers the matte for the first 10-20 frames;
+#   measured on 8K VR (mean |alpha - warmed state|, frame 0): 0.019 cold, 0.0071
+#   with 16 passes, 0.0054 with 32. Each pass costs one inference (~10 ms batch2
+#   at 1024 on an RTX 5060 Ti; 16 passes ~0.16 s isolated, 0.3-0.5 s measured
+#   during live start-up while the decoder/encoder spin up), paid once before
+#   the first frame. Scene-cut resets mid-stream are not primed: the stall
+#   would land on a realtime stream. 0 disables.
+RVM_START_PRIME_FRAMES = max(0, int(_env("RVM_START_PRIME_FRAMES", 16)))
+
 # PT_RVM_ALPHA_SMOOTH:
 #   1 enables temporal EMA smoothing on RVM alpha output. Default off globally;
 #   offline tools enable it explicitly.

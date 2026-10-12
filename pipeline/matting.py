@@ -1250,6 +1250,7 @@ class Matter:
         self._call_count = 0
         self._last_ort_shape = ""
         self._temporal_frame_idx = 0
+        self._rvm_prime_pending = 0
         self._cached_alpha_small: np.ndarray | None = None
         self._cached_alpha_shape: tuple[int, int, int, int, int] | None = None
         self._cached_alpha_ort_shape = ""
@@ -1459,8 +1460,13 @@ class Matter:
             return coeffs, gamma_lut, identity
         return coeffs, identity
 
-    def reset_state(self) -> None:
-        """Clear temporal matting state between independent videos/requests."""
+    def reset_state(self, prime_frames: int = 0) -> None:
+        """Clear temporal matting state between independent videos/requests.
+
+        ``prime_frames`` runs that many extra RVM passes over the next inferred
+        frame before its alpha is used, so a stream does not open on a cold
+        recurrent state (see PT_RVM_START_PRIME_FRAMES).
+        """
         self._rvm_rec = None
         self._rvm_rec_ort = None
         self._rvm_rec_sig = None
@@ -1479,6 +1485,7 @@ class Matter:
         self._cached_alpha_shape = None
         self._cached_alpha_ort_shape = ""
         self._temporal_frame_idx = 0
+        self._rvm_prime_pending = max(0, int(prime_frames)) if getattr(self, "model_kind", "") == "rvm" else 0
         with self._nv12_slot_cond:
             for i in range(len(self._nv12_slot_in_use)):
                 self._nv12_slot_in_use[i] = False
@@ -2555,6 +2562,7 @@ class Matter:
     def _alpha_low_res(self, frame_bgr: np.ndarray) -> tuple[np.ndarray, MattingTiming, str]:
         import time as _time
 
+        self._prime_rvm_state(lambda: self._alpha_low_res(frame_bgr))
         t0 = _time.perf_counter()
         split_sbs_active = MATTING_SPLIT_SBS and frame_bgr.shape[1] >= 2 * frame_bgr.shape[0]
         if split_sbs_active:
@@ -2603,6 +2611,8 @@ class Matter:
     def _alpha_low_res_gpu(self, h: int, w: int, use_nv12: bool = False) -> tuple[np.ndarray, MattingTiming, str]:
         import time as _time
 
+        # Every GPU caller lands here, including AlphaPacker's direct call.
+        self._prime_rvm_state(lambda: self._alpha_low_res_gpu(h, w, use_nv12=use_nv12))
         t0 = _time.perf_counter()
         preprocess_one = self._gpu_preprocess_nv12_one if use_nv12 else self._gpu_preprocess_one
         split_sbs_active = MATTING_SPLIT_SBS and w >= 2 * h
@@ -2710,6 +2720,19 @@ class Matter:
                 MATTING_SQUARE, MATTING_SPLIT_SBS, split_sbs_active, self._rvm_provider_diag(),
             )
         return a_small, MattingTiming(pre_ms, ort_ms, 0.0, 0.0), ort_shape
+
+    def _prime_rvm_state(self, infer_once) -> None:
+        """Advance a freshly reset RVM state over the current frame (see reset_state)."""
+        passes = self._rvm_prime_pending
+        if passes <= 0:
+            return
+        self._rvm_prime_pending = 0
+        import time as _time
+
+        t0 = _time.perf_counter()
+        for _ in range(passes):
+            infer_once()
+        log.info("RVM start prime: passes=%d elapsed=%.1fms", passes, (_time.perf_counter() - t0) * 1000)
 
     def _alpha_low_res_gpu_temporal(self, h: int, w: int, use_nv12: bool = False) -> tuple[np.ndarray, MattingTiming, str]:
         """Reuse the latest low-res alpha for skipped frames when PT_ALPHA_STRIDE > 1."""

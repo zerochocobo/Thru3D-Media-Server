@@ -4,7 +4,7 @@
 
 中文 | [English](README.md) | [日本語](README.ja-JP.md)
 
-项目官网：[https://wapok.com](https://wapok.com)
+项目官网：[https://thru3d.com](https://thru3d.com)
 
 Thru3D媒体服务器 的目标是让所有VR视频都可以透视，实现混合现实(MR)。
 

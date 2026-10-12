@@ -4,6 +4,12 @@ This file only keeps version releases, major bug fixes, major UI/UX updates, and
 
 ## English
 
+### 2026-10-11
+
+- **Alpha matte start-up stability:** Realtime live and virtual-file playback now prime the RVM recurrent state on the first frame after each start or seek (`PT_RVM_START_PRIME_FRAMES`, default 16, 0 disables). On an 8K VR test clip, first-frame matte error against a warmed state fell from 0.019 to 0.007, at a one-time start-up cost of about 0.3–0.5 s. Thumbnails, warmup, offline tools, and mid-stream scene-cut resets are unchanged.
+- **Thru3D Media Player compatibility:** Diagnosed virtual MP4 playback stopping after a few seconds and live playback failing in Thru3D Media Player. The server needed no change: the player's HTTP stack treated span-limited 206 responses as end of file, and its bare `libmpv` User-Agent matched the Skybox thumbnail-probe rule on live routes. Both are fixed in the updated player, which identifies itself as `Thru3D/<version> (Android; libmpv)`.
+- **Website address:** The dashboard project link now points to https://thru3d.com.
+
 ### 2026-10-10
 
 - **Offline VR source controls:** Added Auto Detect / VR180 / Fisheye selection to single-file and batch passthrough conversion, with a 140°–280° fisheye FOV selector in 10° steps. The CLI exposes `--source-projection` and `--source-fov`; manual choices override filename detection, segmented jobs retain the selection, and output naming/library matching follow the selected projection. Alpha reuses the realtime projection and packing path; green-screen output preserves source projection pixels.
@@ -386,6 +392,12 @@ This file only keeps version releases, major bug fixes, major UI/UX updates, and
 - **Core update:** Added initial DLNA time-seek metadata, passthrough HEAD support, and `PT_CONTAINER` support for MP4 and MPEG-TS passthrough output.
 
 ## 中文
+
+### 2026-10-11
+
+- **Alpha遮罩起播稳定性：** 在线与虚拟文件播放在每次起播或跳转后，先用首帧预热RVM循环状态（`PT_RVM_START_PRIME_FRAMES`，默认16，0为关闭）。8K VR测试片中，首帧遮罩相对已预热状态的误差由0.019降至0.007，仅在起播时一次性增加约0.3–0.5秒。缩略图、预热、离线工具及播放中途的场景切换重置保持不变。
+- **Thru3D Media Player兼容：** 排查Thru3D Media Player播放虚拟MP4数秒即停、live无法播放的问题。服务端无需修改：播放器HTTP组件把分段返回的206当作文件结束，且其裸`libmpv` User-Agent在live路由命中Skybox缩略图探测规则。两者已在新版播放器修复，播放器改以`Thru3D/<版本> (Android; libmpv)`标识。
+- **官网地址：** 管理页官网链接改为 https://thru3d.com。
 
 ### 2026-10-10
 

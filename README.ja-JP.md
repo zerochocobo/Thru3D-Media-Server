@@ -4,7 +4,7 @@
 
 日本語 | [English](README.md) | [中文](README.zh-CN.md)
 
-公式サイト：[https://wapok.com](https://wapok.com)
+公式サイト：[https://thru3d.com](https://thru3d.com)
 
 Thru3D Media Server の目標は、すべてのVR動画をパススルー対応にし、複合現実（MR）を実現することです。
 
