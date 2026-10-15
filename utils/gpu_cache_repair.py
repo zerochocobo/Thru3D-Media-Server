@@ -10,6 +10,8 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
+from media_library import safe_resolve_path
+
 
 GPU_CACHE_TARGETS = (
     "cuda_compute_cache",
@@ -36,7 +38,7 @@ class GpuCacheRepairResult:
 
 def quarantine_gpu_caches(runtime_cache_dir: Path, *, stamp: str | None = None) -> GpuCacheRepairResult:
     """Move known generated GPU caches aside without touching user state."""
-    root = Path(runtime_cache_dir).resolve()
+    root = safe_resolve_path(Path(runtime_cache_dir))
     root.mkdir(parents=True, exist_ok=True)
     stamp = stamp or time.strftime("%Y%m%d_%H%M%S")
     quarantine = root / QUARANTINE_ROOT_NAME / stamp
@@ -78,6 +80,8 @@ def discard_quarantine(path: Path | None) -> None:
     """Permanently remove one successful repair quarantine."""
     if path is None:
         return
+    # Keep cleanup strict: if the canonical target cannot be checked, retain
+    # the quarantine rather than deleting through an unresolved alias.
     target = Path(path).resolve()
     if target.parent.name != QUARANTINE_ROOT_NAME:
         raise ValueError(f"not a GPU cache quarantine directory: {target}")
@@ -95,7 +99,7 @@ def cleanup_old_quarantines(
     now: float | None = None,
 ) -> tuple[str, ...]:
     """Remove abandoned GPU cache quarantines older than the retention window."""
-    root = Path(runtime_cache_dir).resolve() / QUARANTINE_ROOT_NAME
+    root = safe_resolve_path(Path(runtime_cache_dir)) / QUARANTINE_ROOT_NAME
     if not root.is_dir():
         return ()
     cutoff = float(time.time() if now is None else now) - max(0.0, float(max_age_days)) * 86400.0

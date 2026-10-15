@@ -16,6 +16,7 @@ import sys
 import time
 
 import config
+from media_library import safe_resolve_path
 from utils.trt_manifest import (
     TRT_PROVIDER_CHAIN,
     cache_status,
@@ -177,7 +178,7 @@ def _validate_tensorrt_provider(log) -> bool:
         config.ONNX_PROVIDERS = [p.strip() for p in TRT_PROVIDER_CHAIN.split(",") if p.strip()]
         runtime_model = trt_runtime_model_path()
         if runtime_model.exists() and runtime_model != config.MODEL_PATH:
-            config.MODEL_PATH = runtime_model.resolve()
+            config.MODEL_PATH = safe_resolve_path(runtime_model)
         log.info("trt cache ready; ONNX providers=%s runtime_model=%s", config.ONNX_PROVIDERS, config.MODEL_PATH)
         return True
     reasons: list[str] = []

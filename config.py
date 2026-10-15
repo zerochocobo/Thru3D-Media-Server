@@ -17,7 +17,9 @@ import sys
 from pathlib import Path
 from uuid import NAMESPACE_DNS, uuid5
 
-ROOT = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).parent.resolve()
+from media_library import safe_resolve_path
+
+ROOT = safe_resolve_path(Path(sys.executable)).parent if getattr(sys, "frozen", False) else Path(__file__).parent.absolute()
 
 
 def _env(key: str, default):
@@ -385,7 +387,7 @@ REQUEST_HISTORY_MAX_RECORDS = max(0, int(_env("REQUEST_HISTORY_MAX_RECORDS", 500
 #   debug_output/request_history. Writes are buffered and flushed every
 #   PT_REQUEST_HISTORY_FLUSH_EVERY records to avoid per-request fsync costs.
 REQUEST_HISTORY_JSONL = _env("REQUEST_HISTORY_JSONL", "1") == "1"
-REQUEST_HISTORY_DIR: Path = Path(_env("REQUEST_HISTORY_DIR", ROOT / "debug_output" / "request_history")).resolve()
+REQUEST_HISTORY_DIR: Path = safe_resolve_path(Path(_env("REQUEST_HISTORY_DIR", ROOT / "debug_output" / "request_history")))
 REQUEST_HISTORY_FLUSH_EVERY = max(1, int(_env("REQUEST_HISTORY_FLUSH_EVERY", 16)))
 
 # PT_REQUEST_HISTORY_REDACT:
@@ -418,7 +420,7 @@ PASSTHROUGH_LIVE_DEFAULT_PROFILE = _env("PASSTHROUGH_LIVE_DEFAULT_PROFILE", "vlc
 # PT_MODEL_PATH:
 #   ONNX matting model path. Realtime defaults to RVM MobileNetV3 FP32 while
 #   investigating FP16 alpha stability on some 2D sources.
-MODEL_PATH: Path = Path(_env("MODEL_PATH", ROOT / "models" / "rvm_mobilenetv3_fp32.onnx")).resolve()
+MODEL_PATH: Path = safe_resolve_path(Path(_env("MODEL_PATH", ROOT / "models" / "rvm_mobilenetv3_fp32.onnx")))
 
 # PT_MATTING_DEVICE:
 #   Matting backend selection.
@@ -902,9 +904,9 @@ ONNX_PROVIDERS: list[str] = _env(
 #   TensorrtExecutionProvider. Keep disabled unless explicitly A/B testing TRT
 #   because the first engine build can take significant startup time.
 ONNX_TRT_ENGINE_CACHE_ENABLE = _env("ONNX_TRT_ENGINE_CACHE_ENABLE", "1") == "1"
-ONNX_TRT_ENGINE_CACHE_PATH: Path = Path(
+ONNX_TRT_ENGINE_CACHE_PATH: Path = safe_resolve_path(Path(
     _env("ONNX_TRT_ENGINE_CACHE_PATH", ROOT / "runtime_cache" / "trt_engines")
-).resolve()
+))
 # TensorRT builds default to FP32. FP16 TRT engines have shown alpha flicker
 # on some RVM and MatAnyone2 paths.
 ONNX_TRT_FP16_ENABLE = _env("ONNX_TRT_FP16_ENABLE", "0") == "1"
@@ -990,41 +992,43 @@ PASSTHROUGH_RVM_BYPASS_ALPHA = _env("PASSTHROUGH_RVM_BYPASS_ALPHA", "0") == "1"
 
 # PT_RUNTIME_CACHE_DIR:
 #   Root directory for all runtime-generated caches and warmup markers.
-RUNTIME_CACHE_DIR: Path = Path(_env("RUNTIME_CACHE_DIR", ROOT / "runtime_cache")).resolve()
+RUNTIME_CACHE_DIR: Path = safe_resolve_path(Path(_env("RUNTIME_CACHE_DIR", ROOT / "runtime_cache")))
 
 # PT_CUDA_CACHE_PATH:
 #   CUDA JIT cache directory used by the CUDA driver.
-CUDA_CACHE_PATH: Path = Path(_env("CUDA_CACHE_PATH", RUNTIME_CACHE_DIR / "cuda_compute_cache")).resolve()
+CUDA_CACHE_PATH: Path = safe_resolve_path(Path(_env("CUDA_CACHE_PATH", RUNTIME_CACHE_DIR / "cuda_compute_cache")))
 
 # PT_CUPY_CACHE_DIR:
 #   CuPy kernel cache directory.
-CUPY_CACHE_DIR: Path = Path(_env("CUPY_CACHE_DIR", RUNTIME_CACHE_DIR / "cupy")).resolve()
+CUPY_CACHE_DIR: Path = safe_resolve_path(Path(_env("CUPY_CACHE_DIR", RUNTIME_CACHE_DIR / "cupy")))
 
 # PT_ORT_CACHE_DIR:
 #   Optional ONNX Runtime cache directory for provider artifacts.
-ORT_CACHE_DIR: Path = Path(_env("ORT_CACHE_DIR", RUNTIME_CACHE_DIR / "ort")).resolve()
+ORT_CACHE_DIR: Path = safe_resolve_path(Path(_env("ORT_CACHE_DIR", RUNTIME_CACHE_DIR / "ort")))
 
 # PT_GPU_WARMUP_MARKER:
 #   JSON marker written after warmup succeeds for a particular machine/model key.
-GPU_WARMUP_MARKER: Path = Path(_env("GPU_WARMUP_MARKER", RUNTIME_CACHE_DIR / "gpu_warmup_marker.json")).resolve()
+GPU_WARMUP_MARKER: Path = safe_resolve_path(Path(_env("GPU_WARMUP_MARKER", RUNTIME_CACHE_DIR / "gpu_warmup_marker.json")))
 
 # PT_GPU_WARMUP_LOCK:
 #   File lock used to avoid multiple simultaneous warmup runs.
-GPU_WARMUP_LOCK: Path = Path(_env("GPU_WARMUP_LOCK", RUNTIME_CACHE_DIR / ".warmup.lock")).resolve()
+GPU_WARMUP_LOCK: Path = safe_resolve_path(Path(_env("GPU_WARMUP_LOCK", RUNTIME_CACHE_DIR / ".warmup.lock")))
 
 # PT_RUNTIME_TMP_DIR:
 #   Temporary directory used while building cache artifacts and during warmup.
-RUNTIME_TMP_DIR: Path = Path(_env("RUNTIME_TMP_DIR", RUNTIME_CACHE_DIR / "tmp")).resolve()
+#   Windows NVRTC needs an ASCII source-file path. Runtime setup selects and
+#   logs a writable ASCII alternative when this directory contains Unicode.
+RUNTIME_TMP_DIR: Path = safe_resolve_path(Path(_env("RUNTIME_TMP_DIR", RUNTIME_CACHE_DIR / "tmp")))
 
 # PT_BITRATE_ESTIMATES:
 #   JSON cache of per-file bitrate estimates used by pseudo-VOD size math.
-BITRATE_ESTIMATES: Path = Path(_env("BITRATE_ESTIMATES", RUNTIME_CACHE_DIR / "bitrate_estimates.json")).resolve()
+BITRATE_ESTIMATES: Path = safe_resolve_path(Path(_env("BITRATE_ESTIMATES", RUNTIME_CACHE_DIR / "bitrate_estimates.json")))
 
 # PT_LIBRARY_INDEX_DB:
 #   SQLite cache for DLNA directory listings and video metadata. Browse requests
 #   still check directory/file stat data so external file changes invalidate the
 #   affected rows without requiring a server restart.
-LIBRARY_INDEX_DB: Path = Path(_env("LIBRARY_INDEX_DB", RUNTIME_CACHE_DIR / "library_index.sqlite")).resolve()
+LIBRARY_INDEX_DB: Path = safe_resolve_path(Path(_env("LIBRARY_INDEX_DB", RUNTIME_CACHE_DIR / "library_index.sqlite")))
 
 # Driver-facing cache variables. These remain overridable through the host
 # environment, but config.py now owns the canonical defaults.
@@ -1604,9 +1608,9 @@ PASSTHROUGH_AUDIO_MPEGTS_SLATE_BURST_FRAMES = max(
 # PT_PASSTHROUGH_AUDIO_MPEGTS_CACHE_DIR:
 #   Directory for extracted ADTS AAC cache files. File identity includes source
 #   absolute path, size, and mtime, so replacing a video invalidates its cache.
-PASSTHROUGH_AUDIO_MPEGTS_CACHE_DIR: Path = Path(
+PASSTHROUGH_AUDIO_MPEGTS_CACHE_DIR: Path = safe_resolve_path(Path(
     _env("PASSTHROUGH_AUDIO_MPEGTS_CACHE_DIR", RUNTIME_CACHE_DIR / "audio")
-).resolve()
+))
 
 # PT_PASSTHROUGH_AUDIO_MPEGTS_PAT_PMT_AT_FRAMES:
 #   1 adds FFmpeg mpegts flag pat_pmt_at_frames in addition to resend_headers.

@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 if __package__ in (None, ""):
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 from utils.gpu_runtime_cache import configure_gpu_runtime_cache
 from utils.runtime_dll_paths import apply_runtime_dll_paths

@@ -82,7 +82,7 @@ def verify_byte_splice_identity(src: Path, rows: list[dict]) -> bool:
 # helper: pre-generate the mixed audio sidecar with the real SI filter
 # ---------------------------------------------------------------------------
 def make_mixed_audio(src: Path, si_wav: Path, seconds: int, out: Path) -> None:
-    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+    sys.path.insert(0, str(Path(__file__).absolute().parents[2]))
     from utils.si_filter import build_si_mix_filter
 
     filt = build_si_mix_filter("both", 100, 100, 1.0, True)

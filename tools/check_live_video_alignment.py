@@ -20,7 +20,7 @@ import cv2
 import cupy as cp
 import numpy as np
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).absolute().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from pipeline.pynv_io import GpuP016Frame, PyNvSimpleDecoder  # noqa: E402

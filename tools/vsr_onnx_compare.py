@@ -36,13 +36,14 @@ import time
 from pathlib import Path
 
 if __package__ in (None, ""):
-    project_root = Path(__file__).resolve().parents[1]
+    project_root = Path(__file__).absolute().parents[1]
     if str(project_root) not in sys.path:
         sys.path.insert(0, str(project_root))
 
 import numpy as np
 
 import config
+from media_library import safe_resolve_path
 from utils.runtime_dll_paths import apply_runtime_dll_paths
 from utils.subprocess_hidden import hidden_subprocess_kwargs
 
@@ -354,11 +355,11 @@ def main(argv: list[str] | None = None) -> int:
                     default=int(getattr(config, "RTX_VSR_QUALITY", 3)))
     args = ap.parse_args(argv)
 
-    src = Path(args.video).resolve()
+    src = safe_resolve_path(Path(args.video))
     if not src.exists():
         print(f"[error] source not found: {src}", flush=True)
         return 2
-    out_dir = (args.out_dir or src.parent).resolve()
+    out_dir = safe_resolve_path(args.out_dir or src.parent)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     rows: list[dict] = []

@@ -4,9 +4,11 @@ import os
 import sys
 from pathlib import Path
 
+from media_library import safe_resolve_path
+
 from utils.runtime_dll_paths import apply_runtime_dll_paths
 
-ROOT = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[2]
+ROOT = safe_resolve_path(Path(sys.executable)).parent if getattr(sys, "frozen", False) else Path(__file__).absolute().parents[2]
 
 
 def python_executable() -> str:
@@ -18,7 +20,7 @@ def python_executable() -> str:
 
 def server_command() -> tuple[str, list[str]]:
     if getattr(sys, "frozen", False):
-        base = Path(sys.executable).resolve().parent
+        base = safe_resolve_path(Path(sys.executable)).parent
         for name in ("pt_core.exe", "vr_pt_server.exe", "VR_Video_Passthrough_Server.exe"):
             exe = base / name
             if exe.exists():

@@ -23,9 +23,9 @@ def _module_dir(module_name: str) -> Path | None:
     if spec is None:
         return None
     if spec.origin:
-        return Path(spec.origin).resolve().parent
+        return Path(spec.origin).absolute().parent
     if spec.submodule_search_locations:
-        return Path(next(iter(spec.submodule_search_locations))).resolve()
+        return Path(next(iter(spec.submodule_search_locations))).absolute()
     return None
 
 

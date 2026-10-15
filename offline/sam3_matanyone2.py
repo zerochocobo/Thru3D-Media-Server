@@ -5,6 +5,8 @@ import gc
 import sys
 from pathlib import Path
 
+from media_library import safe_resolve_path
+
 import numpy as np
 
 
@@ -329,13 +331,13 @@ class Sam3TextMasker:
     ) -> tuple[Path | None, Path | None, Path | None]:
         roots = [default_bpe_path.parents[2]]
         if getattr(sys, "frozen", False):
-            exe_root = Path(sys.executable).resolve().parent
+            exe_root = safe_resolve_path(Path(sys.executable)).parent
             roots.extend([exe_root, exe_root / "_internal"])
         roots.append(Path.cwd())
 
         seen: set[Path] = set()
         for root in roots:
-            root = root.resolve()
+            root = safe_resolve_path(root)
             if root in seen:
                 continue
             seen.add(root)

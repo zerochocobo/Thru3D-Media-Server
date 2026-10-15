@@ -1020,9 +1020,12 @@ class PassthroughVmp4SlotRouteTests(unittest.TestCase):
     def _wait_failed(self, key: str, timeout: float = 2.0):
         deadline = time.time() + timeout
         while time.time() < deadline:
-            build = routes_media._vmp4_slot_builds.get(key)
-            if build is not None and build.state == "failed":
-                return build
+            # The worker marks failed before finishing its manifest write.
+            # Its lock covers both operations, so wait for the lock as well.
+            with routes_media._vmp4_slot_build_lock:
+                build = routes_media._vmp4_slot_builds.get(key)
+                if build is not None and build.state == "failed":
+                    return build
             time.sleep(0.01)
         return routes_media._vmp4_slot_builds.get(key)
 
@@ -1089,6 +1092,7 @@ class PassthroughVmp4SlotRouteTests(unittest.TestCase):
                     while time.time() < deadline and build_mock.call_count < 2:
                         time.sleep(0.01)
                     self.assertEqual(build_mock.call_count, 2)
+                    self.assertEqual(self._wait_failed(key).attempts, 2)
         finally:
             routes_media._vmp4_slot_builds.clear()
             routes_media._vmp4_slot_builds.update(original_builds)

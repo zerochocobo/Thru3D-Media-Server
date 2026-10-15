@@ -14,6 +14,7 @@ import numpy as np
 import onnxruntime as ort
 
 import config
+from media_library import safe_resolve_path
 from offline.decoded_frames import decoded_frame_to_sbs_eye_rgbs, scene_bgr_from_rgb
 from utils.scene_detection import SceneCutDetector
 from utils.subprocess_hidden import hidden_subprocess_kwargs, run_hidden_streaming
@@ -749,8 +750,8 @@ def precompute_segment_masks(args, src: Path, dec, source_fps: float, fps: float
         else 0
     )
     masker = Yolo26mBiRefNetMasker(
-        Path(getattr(args, "y26br_model_dir", config.ROOT / "models" / "yolo26m")).resolve(),
-        Path(getattr(args, "y26br_birefnet_model_dir", config.ROOT / "models" / "BiRefNet")).resolve(),
+        safe_resolve_path(Path(getattr(args, "y26br_model_dir", config.ROOT / "models" / "yolo26m"))),
+        safe_resolve_path(Path(getattr(args, "y26br_birefnet_model_dir", config.ROOT / "models" / "BiRefNet"))),
         provider=str(getattr(args, "y26br_provider", "cuda")),
         yolo_model=str(getattr(args, "y26br_yolo_model", "yolo26m_model.onnx")),
         birefnet_model=str(getattr(args, "y26br_birefnet_model", "model_fp16.onnx")),
@@ -765,7 +766,7 @@ def precompute_segment_masks(args, src: Path, dec, source_fps: float, fps: float
         max_box_area=float(getattr(args, "y26br_max_box_area", 0.50)),
         cross_eye_area_ratio=float(getattr(args, "y26br_cross_eye_area_ratio", 1.5)),
     )
-    debug_dir = Path(args.y26br_debug_dir).resolve() if getattr(args, "y26br_debug_dir", "") else None
+    debug_dir = safe_resolve_path(Path(args.y26br_debug_dir)) if getattr(args, "y26br_debug_dir", "") else None
     if debug_dir:
         debug_dir.mkdir(parents=True, exist_ok=True)
     print(
@@ -919,12 +920,12 @@ def precompute_segment_masks_subprocess(args, src: Path, source_fps: float, fps:
     cmd += [
         str(src),
         "--engine", "matanyone2_onnx",
-        "--model", str(Path(args._matanyone2_model_dir).resolve()),
+        "--model", str(safe_resolve_path(Path(args._matanyone2_model_dir))),
         "--matanyone2-size", str(args.matanyone2_size),
         "--matanyone2-batch", str(args.matanyone2_batch),
         "--matanyone2-prepass", "yolo26m_birefnet",
-        "--y26br-model-dir", str(Path(args.y26br_model_dir).resolve()),
-        "--y26br-birefnet-model-dir", str(Path(args.y26br_birefnet_model_dir).resolve()),
+        "--y26br-model-dir", str(safe_resolve_path(Path(args.y26br_model_dir))),
+        "--y26br-birefnet-model-dir", str(safe_resolve_path(Path(args.y26br_birefnet_model_dir))),
         "--y26br-provider", str(args.y26br_provider),
         "--y26br-yolo-model", str(args.y26br_yolo_model),
         "--y26br-birefnet-model", str(args.y26br_birefnet_model),
@@ -952,7 +953,7 @@ def precompute_segment_masks_subprocess(args, src: Path, source_fps: float, fps:
     if not bool(getattr(args, "y26br_binarize_mask", True)):
         cmd += ["--no-y26br-binarize-mask"]
     if getattr(args, "y26br_debug_dir", ""):
-        cmd += ["--y26br-debug-dir", str(Path(args.y26br_debug_dir).resolve())]
+        cmd += ["--y26br-debug-dir", str(safe_resolve_path(Path(args.y26br_debug_dir)))]
     if not bool(getattr(args, "y26br_cut_on_count_change", True)):
         cmd += ["--no-y26br-cut-on-count-change"]
     if bool(getattr(args, "y26br_cut_every_active_sample", False)):

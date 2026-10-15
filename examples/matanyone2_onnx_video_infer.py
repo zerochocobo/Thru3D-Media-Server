@@ -367,7 +367,7 @@ class MatAnyone2OnnxRunner:
 
 
 def run_video(args: argparse.Namespace) -> None:
-    runner = MatAnyone2OnnxRunner(Path(args.model_dir).resolve(), use_cuda=not args.cpu)
+    runner = MatAnyone2OnnxRunner(Path(args.model_dir).absolute(), use_cuda=not args.cpu)
     if args.sbs and runner.batch_size < 2:
         print("[info] SBS input with bs1 model: eyes will run sequentially.")
     if not args.sbs and runner.batch_size >= 2:
@@ -422,7 +422,7 @@ def run_video(args: argparse.Namespace) -> None:
         alpha = runner.run_frame(image, mask, states[0])[0]
         output_first = _alpha_to_output_frame(first, alpha, args.output_mode, tuple(args.green_bgr))
 
-    out_path = Path(args.out).resolve()
+    out_path = Path(args.out).absolute()
     out_path.parent.mkdir(parents=True, exist_ok=True)
     h, w = output_first.shape[:2]
     fourcc = cv2.VideoWriter_fourcc(*args.fourcc)

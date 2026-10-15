@@ -28,7 +28,7 @@ from pathlib import Path
 import numpy as np
 
 if __package__ in (None, ""):
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config
 from utils.runtime_dll_paths import apply_runtime_dll_paths
@@ -857,7 +857,7 @@ def _self_command() -> tuple[str, list[str]]:
     """How to re-invoke this tool as a child process."""
     if getattr(sys, "frozen", False):
         return sys.executable, ["face_beauty"]
-    return sys.executable, [str(Path(__file__).resolve())]
+    return sys.executable, [str(Path(__file__).absolute())]
 
 
 def _ensure_trt_cache(options: BeautyOptions) -> int:

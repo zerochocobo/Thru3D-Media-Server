@@ -11,11 +11,12 @@ import cv2
 import numpy as np
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).absolute().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import config
+from media_library import safe_resolve_path
 from pipeline.subtitles import SubtitleRenderer
 from ui.settings import SETTINGS_PATH
 
@@ -357,8 +358,8 @@ def _apply_ui_settings(settings_path: Path) -> dict:
 
 
 def run(args: argparse.Namespace) -> int:
-    video_path = Path(args.video).resolve()
-    out_dir = Path(args.out_dir).resolve()
+    video_path = safe_resolve_path(Path(args.video))
+    out_dir = safe_resolve_path(Path(args.out_dir))
     out_dir.mkdir(parents=True, exist_ok=True)
     for case_name in ("green_srt", "green_ass", "alpha_srt", "alpha_ass"):
         shutil.rmtree(out_dir / case_name, ignore_errors=True)
@@ -368,11 +369,11 @@ def run(args: argparse.Namespace) -> int:
         configure_gpu_runtime_cache()
     settings = {}
     if not args.no_ui_settings:
-        settings = _apply_ui_settings(Path(args.settings).resolve())
+        settings = _apply_ui_settings(safe_resolve_path(Path(args.settings)))
 
     subtitle_paths = {
-        "srt": Path(args.srt).resolve() if args.srt else video_path.with_suffix(".srt"),
-        "ass": Path(args.ass).resolve() if args.ass else video_path.with_suffix(".ass"),
+        "srt": safe_resolve_path(Path(args.srt)) if args.srt else video_path.with_suffix(".srt"),
+        "ass": safe_resolve_path(Path(args.ass)) if args.ass else video_path.with_suffix(".ass"),
     }
     missing = [str(path) for path in subtitle_paths.values() if not path.is_file()]
     if missing:
@@ -406,7 +407,7 @@ def run(args: argparse.Namespace) -> int:
     index_path = out_dir / "index.json"
     payload = {
         "video": str(video_path),
-        "settings_path": "" if args.no_ui_settings else str(Path(args.settings).resolve()),
+        "settings_path": "" if args.no_ui_settings else str(safe_resolve_path(Path(args.settings))),
         "applied_settings": {
             "subtitle_mode": config.SUBTITLE_MODE,
             "subtitle_direction": config.SUBTITLE_DIRECTION,

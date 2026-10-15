@@ -44,7 +44,9 @@ from dataclasses import replace
 from pathlib import Path
 
 if __package__ in (None, ""):
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
+
+from media_library import safe_resolve_path
 
 import numpy as np
 
@@ -199,7 +201,7 @@ def main(argv: list[str] | None = None) -> int:
     if not src.is_file():
         raise SystemExit(f"no such file: {src}")
 
-    out_dir = Path(args.out).resolve() if args.out else None
+    out_dir = safe_resolve_path(Path(args.out)) if args.out else None
     if out_dir is not None:
         out_dir.mkdir(parents=True, exist_ok=True)
 

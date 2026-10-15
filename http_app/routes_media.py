@@ -1983,7 +1983,7 @@ def _vmp4_mode_candidate(path: Path, output_mode: str, info) -> Path | None:
         if candidate in seen:
             continue
         seen.add(candidate)
-        if candidate.is_file() and candidate.resolve() != path.resolve():
+        if candidate.is_file() and safe_resolve_path(candidate) != safe_resolve_path(path):
             return candidate
     try:
         siblings = list(path.parent.iterdir())
@@ -4110,7 +4110,10 @@ def _vmp4_frames_filler_worker(
     except Exception as exc:
         filler.state = "failed"
         filler.reason = f"{type(exc).__name__}: {exc}"
-        log.warning("passthrough_seek VMP4 frames filler failed: start=%d reason=%s", filler.start_frame, filler.reason)
+        log.warning(
+            "passthrough_seek VMP4 frames filler failed: start=%d reason=%s mode=%s cursor=%d",
+            filler.start_frame, filler.reason, mode, filler.cursor, exc_info=True,
+        )
     finally:
         release_matter(matter)
         filler.done_event.set()

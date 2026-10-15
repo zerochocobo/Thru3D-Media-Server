@@ -7,6 +7,8 @@ import time
 import shutil
 from pathlib import Path
 
+from media_library import safe_resolve_path
+
 import numpy as np
 
 
@@ -253,7 +255,7 @@ def _run_matanyone2_step_update_isolated(model_key: str, model_path: Path, cache
             "PT_ONNX_PROVIDERS": "TensorrtExecutionProvider,CUDAExecutionProvider,CPUExecutionProvider",
             "PT_ONNX_TRT_FP16_ENABLE": "0",
             "PT_ONNX_TRT_CUDA_GRAPH_ENABLE": "0",
-            "PT_ONNX_TRT_ENGINE_CACHE_PATH": str(cache_dir.resolve()),
+            "PT_ONNX_TRT_ENGINE_CACHE_PATH": str(safe_resolve_path(cache_dir)),
         }
     )
     rc = run_hidden_streaming(
@@ -265,7 +267,7 @@ def _run_matanyone2_step_update_isolated(model_key: str, model_path: Path, cache
             "--matanyone2-model-key",
             model_key,
             "--cache-dir",
-            str(cache_dir.resolve()),
+            str(safe_resolve_path(cache_dir)),
             "--fp16",
             "0",
             "--cuda-graph",
@@ -315,7 +317,7 @@ def main(argv: list[str] | None = None) -> int:
         os.environ["PT_ONNX_TRT_FP16_ENABLE"] = "1" if args.fp16 else "0"
         os.environ["PT_ONNX_TRT_CUDA_GRAPH_ENABLE"] = "1" if args.cuda_graph else "0"
         if args.cache_dir is not None:
-            os.environ["PT_ONNX_TRT_ENGINE_CACHE_PATH"] = str(args.cache_dir.resolve())
+            os.environ["PT_ONNX_TRT_ENGINE_CACHE_PATH"] = str(safe_resolve_path(args.cache_dir))
 
         import config
 
@@ -327,7 +329,7 @@ def main(argv: list[str] | None = None) -> int:
         config.ONNX_TRT_FP16_ENABLE = bool(args.fp16)
         config.ONNX_TRT_CUDA_GRAPH_ENABLE = bool(args.cuda_graph)
         if args.cache_dir is not None:
-            config.ONNX_TRT_ENGINE_CACHE_PATH = args.cache_dir.resolve()
+            config.ONNX_TRT_ENGINE_CACHE_PATH = safe_resolve_path(args.cache_dir)
 
         from ui.services.process_helpers import base_environment
         from utils.gpu_runtime_cache import configure_gpu_runtime_cache

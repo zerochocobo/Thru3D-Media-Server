@@ -8,8 +8,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from media_library import safe_resolve_path
 
-ROOT = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[2]
+
+ROOT = safe_resolve_path(Path(sys.executable)).parent if getattr(sys, "frozen", False) else Path(__file__).absolute().parents[2]
 LOG_PATH = ROOT / "debug_output" / "ui_startup.log"
 _LOCK = threading.Lock()
 _MAX_BYTES = 1024 * 1024

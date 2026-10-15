@@ -6,6 +6,8 @@ import threading
 from datetime import datetime
 from pathlib import Path
 
+from media_library import safe_resolve_path
+
 from PIL import Image, ImageQt
 from PySide6.QtCore import QPoint, QRect, Qt, Signal
 from PySide6.QtGui import QColor, QIcon, QPainter, QPen, QPixmap
@@ -36,7 +38,7 @@ from ui.settings import DEFAULTS
 from ui.subtitle_preview import create_preview_ass, extract_left_eye_frame, generate_preview_image, get_video_info
 
 
-ROOT = Path(sys.executable).resolve().parent / "_internal" if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[2]
+ROOT = safe_resolve_path(Path(sys.executable)).parent / "_internal" if getattr(sys, "frozen", False) else Path(__file__).absolute().parents[2]
 SUBTITLE_TEMPLATE_PATH = ROOT / "resources" / "subtitle_ass_templates.txt"
 SUBTITLE_PAGE_WIDTH = 1120
 SUBTITLE_PAGE_HEIGHT = 600

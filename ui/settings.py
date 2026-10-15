@@ -4,6 +4,8 @@ import json
 import sys
 from pathlib import Path
 
+from media_library import safe_resolve_path
+
 from media_library import is_unc_path
 from ui.i18n import system_language
 from utils.si_filter import (
@@ -19,7 +21,7 @@ from utils.si_filter import (
 )
 from utils.trt_manifest import TRT_PROVIDER_CHAIN
 
-ROOT = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[1]
+ROOT = safe_resolve_path(Path(sys.executable)).parent if getattr(sys, "frozen", False) else Path(__file__).absolute().parents[1]
 SETTINGS_PATH = ROOT / "runtime_cache" / "ui_settings.json"
 SETTINGS_META_PATH = ROOT / "runtime_cache" / "ui_settings_meta.json"
 

@@ -580,7 +580,7 @@ def main() -> int:
     batch_size = max(1, int(args.batch_size))
     image = torch.rand(batch_size, 3, args.height, args.width, device=args.device, dtype=dtype)
 
-    out_dir = Path(args.out_dir).resolve()
+    out_dir = Path(args.out_dir).absolute()
     image_key_path = out_dir / "matanyone2_image_key.onnx"
     mask_memory_path = out_dir / "matanyone2_mask_memory.onnx"
     first_refine_path = out_dir / "matanyone2_first_frame_refine.onnx"

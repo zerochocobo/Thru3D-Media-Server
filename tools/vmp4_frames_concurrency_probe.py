@@ -27,7 +27,7 @@ import threading
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 os.environ.setdefault("PT_PASSTHROUGH_SEEK_ENABLED", "1")
 os.environ.setdefault("PT_PASSTHROUGH_SEEK_ROUTE_POLICY", "all")

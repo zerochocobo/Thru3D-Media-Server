@@ -13,9 +13,10 @@ import time
 from collections import Counter
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from utils.video_metadata import BackendDecision, probe_video_metadata, select_backend  # noqa: E402
 
 VIDEO_EXTS = {
@@ -212,11 +213,11 @@ def main() -> int:
     summary_path = Path(args.out_summary) if args.out_summary else out_dir / "video_scan_20260508_summary.json"
     baseline_path = Path(args.baseline) if args.baseline else out_dir / "baseline_20260508_video_scan.txt"
     if not csv_path.is_absolute():
-        csv_path = (config.ROOT / csv_path).resolve()
+        csv_path = safe_resolve_path(config.ROOT / csv_path)
     if not summary_path.is_absolute():
-        summary_path = (config.ROOT / summary_path).resolve()
+        summary_path = safe_resolve_path(config.ROOT / summary_path)
     if not baseline_path.is_absolute():
-        baseline_path = (config.ROOT / baseline_path).resolve()
+        baseline_path = safe_resolve_path(config.ROOT / baseline_path)
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     summary_path.parent.mkdir(parents=True, exist_ok=True)
     baseline_path.parent.mkdir(parents=True, exist_ok=True)

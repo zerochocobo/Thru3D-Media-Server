@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Privacy policy for Thru3D Media Player on Meta Quest and PICO, and Thru3D Media Server for Windows.">
+  <meta name="description" content="Privacy policy for Thru3D Media Player on iOS, Apple Vision Pro (visionOS), Meta Quest and PICO, and Thru3D Media Server for Windows.">
   <title>Privacy Policy | Thru3D Media Player &amp; Media Server</title>
   <link rel="icon" type="image/png" href="assets/thru3d-icon.png">
   <link rel="stylesheet" href="styles.css">
@@ -24,14 +24,14 @@
       <header class="privacy-heading">
         <p class="eyebrow">FFSKY / THRU3D / VR VIDEO PASSTHROUGH SERVER</p>
         <h1>Privacy Policy</h1>
-        <p class="privacy-date"><time datetime="2026-10-07">Effective and last updated: October 7, 2026</time></p>
-        <p>This policy covers <strong>Thru3D Media Player</strong> for Meta Quest and PICO (application ID: <code>com.wapok.thru3d</code>), <strong>Thru3D Media Server</strong> for Windows, and this website. These products are provided by <strong>FFSKY</strong>, with producer <strong>FFSKYChocobo</strong>.</p>
-        <p>Your media is processed on your headset or PC. No FFSKY account is required. We do not automatically upload your library or viewing history to our servers, and do not include advertising or behavioral analytics SDKs.</p>
+        <p class="privacy-date"><time datetime="2026-10-15">Effective and last updated: October 15, 2026</time></p>
+        <p>This policy covers <strong>Thru3D Media Player</strong> for iOS, Apple Vision Pro (visionOS), Meta Quest and PICO (Quest/PICO application ID: <code>com.wapok.thru3d</code>), <strong>Thru3D Media Server</strong> for Windows, and this website. These products are provided by <strong>FFSKY</strong>, with producer <strong>FFSKYChocobo</strong>. Features and permissions vary by platform and app version; the descriptions below apply when the corresponding feature is available and used.</p>
+        <p>Your media is processed on your phone, headset or PC. No FFSKY account is required. We do not automatically upload your library or viewing history to our servers, and do not include advertising or behavioral analytics SDKs.</p>
         <a class="privacy-contact" href="mailto:ffskyteam@gmail.com">ffskyteam@gmail.com <span aria-hidden="true">↗</span></a>
       </header>
       <nav class="privacy-contents" aria-label="Privacy Policy">
         <a href="#en-data">Data & use</a>
-        <a href="#en-xr">XR & permissions</a>
+        <a href="#en-xr">Camera & permissions</a>
         <a href="#en-connections">Connections</a>
         <a href="#en-deletion">Delete your data</a>
       </nav>
@@ -42,25 +42,27 @@
         <p>Local diagnostic logs may include device/runtime details, errors, performance information, media paths and network addresses. PC server request logs may include client IP addresses and requested URLs/media. Logs are not automatically sent to us.</p>
       </section>
       <section id="en-xr">
-        <h2>2. Headset data and permissions</h2>
-        <p>Thru3D uses head/controller poses, button input and, when enabled and supported, hand joint and gesture data from the headset runtime for viewpoint rendering and interaction. These data are processed during use; we do not build biometric profiles or send them to our servers. Passthrough displays your surroundings through the platform compositor. The app does not capture, save or upload raw passthrough camera images, and does not request microphone recording, eye tracking, contacts or precise location access.</p>
-        <p><strong>Media and storage:</strong> access to videos, images, audio and related files enables browsing and playback. On supported Android versions, “All files access” enables folder browsing across shared storage. A system file picker can also grant access to selected files.</p>
-        <p><strong>Network, Wi-Fi state and multicast:</strong> used to connect to selected sources and discover local DLNA/SMB servers. Internet access supports remote media and optional cloud connections. Head tracking, optional hand tracking and passthrough support immersive playback and controls.</p>
-        <p>You may deny or revoke applicable permissions in device settings and disable optional features. Functions dependent on that access may then be unavailable.</p>
+        <h2>2. Camera, spatial data and permissions</h2>
+        <p><strong>iOS camera:</strong> when you enable person mixed reality or VR passthrough, Thru3D uses the rear camera, with your permission, to display your surroundings and combine them with the media being played. Camera frames are processed only on your device, transiently in memory for the live view. Thru3D does not record or save these frames as photos, videos, thumbnails or cache files, or upload or share them with FFSKY or third parties. We do not use camera frames for advertising, analytics, identification or AI model training.</p>
+        <p><strong>Headset passthrough:</strong> on Apple Vision Pro, visionOS displays your surroundings through its system compositor; Thru3D does not directly access the device’s raw camera feed. Meta Quest and PICO passthrough likewise uses the platform’s passthrough/compositing service. Using passthrough involves the device’s cameras, but Thru3D does not record, save or upload those camera images.</p>
+        <p><strong>Spatial input:</strong> Thru3D uses head/controller poses, button input and, when enabled and supported, hand joint and gesture data from the headset runtime for viewpoint rendering and interaction. On visionOS, the system also handles standard gaze and gesture interactions without providing the app with raw eye-tracking data. These inputs are processed during use; we do not build biometric profiles or send them to our servers. The app does not request microphone recording, raw eye tracking, contacts or precise location access.</p>
+        <p><strong>Media and storage:</strong> access to videos, images, audio and related files enables browsing and playback. On Apple platforms, system file or photo selection and applicable permissions control access to the media you select or authorize. On supported Android versions, “All files access” enables folder browsing across shared storage. A system file picker can also grant access to selected files.</p>
+        <p><strong>Network and local network:</strong> used to connect to selected media sources and discover local servers. On iOS and visionOS, local network permission is requested when required for these connections or discovery. Android Wi-Fi state and multicast access support local discovery. Internet access supports remote media and optional cloud connections.</p>
+        <p>You may decline or revoke applicable permissions in device settings, including iOS camera access and applicable local network access on iOS or visionOS, and disable optional features. Turning off the iOS mixed reality or VR passthrough feature stops its use of the live camera view. Declining camera permission prevents those camera-based features; playback that does not use the camera remains available.</p>
       </section>
       <section id="en-connections">
         <h2>3. Network sources and cloud accounts</h2>
         <p>The Windows server makes the folders you configure, media metadata and streams available to clients that can reach its DLNA/HTTP service. Thru3D connects directly to the DLNA, SMB or other media sources you select. These servers receive your network address and browsing/playback requests, plus authentication information where required. Use a trusted network: local DLNA/HTTP traffic may be unencrypted.</p>
-        <p>When you save an SMB source, Thru3D stores its server address, share path and supplied username locally; saved passwords are encrypted using Android Keystore. Optional <strong>115 and Baidu Netdisk</strong> connections process account labels, login session cookies, file lists and playback URLs. Saved cloud sessions are encrypted with Android Keystore on the headset and excluded from Android app backup.</p>
+        <p>When you save an SMB source, Thru3D stores its server address, share path and supplied username locally. On Quest/PICO, saved passwords are encrypted using Android Keystore. Where available, optional cloud connections, including <strong>115 and Baidu Netdisk</strong>, process account labels, login session cookies, file lists and playback URLs. On Quest/PICO, saved cloud sessions are encrypted with Android Keystore on the headset and excluded from Android app backup.</p>
         <p>Cloud login is handled by the selected provider. The app sends session credentials and file requests to that provider and connects to its media/CDN servers for playback. The provider receives your IP address and request information under its own policy. This access uses no FFSKY-operated cloud relay. Removing a cloud account from Thru3D does not delete the provider’s account or files.</p>
         <p>Software downloads and PC model/runtime downloads contact your selected host, such as GitHub, Hugging Face, a configured mirror or NVIDIA. The host receives ordinary network request information, such as IP address and requested resource. External sites and services apply their own privacy terms.</p>
         <p>If you enable <strong>LAN WebDAV sharing</strong> in Thru3D, devices on your local network with the generated sharing password can browse and stream connected cloud files through your headset. This is optional and uses HTTP without transport encryption. Share the password only with trusted users; turn sharing off to stop access or reset its password to revoke existing credentials.</p>
-        <p>For other media-server connections, the app also processes server labels/addresses, account IDs, usernames and API keys or access tokens where required. Saved server profiles and credentials are encrypted on the headset using Android Keystore. They are used only to authenticate with and browse/play from the server you select; cover images may be cached locally.</p>
+        <p>For other media-server connections, the app also processes server labels/addresses, account IDs, usernames and API keys or access tokens where required. Saved server profiles and credentials are stored locally; on Quest/PICO they are encrypted on the headset using Android Keystore. They are used only to authenticate with and browse/play from the server you select; cover images may be cached locally.</p>
       </section>
       <section id="en-platforms">
-        <h2>4. Meta Quest, PICO and third-party services</h2>
-        <p>Meta and PICO independently operate their stores, accounts, device services and runtimes. They may process purchase, device and diagnostic data under their own policies. We do not request your Meta/PICO password or import your friends list. Platform-side data processing is separate from the local processing described here.</p>
-        <p>You can manage platform privacy, diagnostic and account options using the relevant platform’s settings. See the privacy policies of <a href="https://www.meta.com/legal/privacy-policy/">Meta</a>, <a href="https://www.picoxr.com/global/legal/privacy-policy">PICO</a>, and <a href="https://policies.google.com/privacy">Google / Gmail</a>. For cloud accounts, consult the policy shown by your chosen provider during login.</p>
+        <h2>4. Apple, Meta Quest, PICO and third-party services</h2>
+        <p>Apple, Meta and PICO independently operate their stores, accounts, device services and runtimes. They may process purchase, device and diagnostic data under their own policies. Apple also handles visionOS system passthrough and standard system interactions. We do not request your Apple Account, Meta or PICO password or import your friends list. Platform-side data processing is separate from the local processing described here.</p>
+        <p>You can manage platform privacy, diagnostic and account options using the relevant platform’s settings. See the privacy policies of <a href="https://www.apple.com/legal/privacy/en-ww/">Apple</a>, <a href="https://www.meta.com/legal/privacy-policy/">Meta</a>, <a href="https://www.picoxr.com/global/legal/privacy-policy">PICO</a>, and <a href="https://policies.google.com/privacy">Google / Gmail</a>. For cloud accounts, consult the policy shown by your chosen provider during login.</p>
       </section>
       <section id="en-website">
         <h2>5. Website and support</h2>
@@ -69,10 +71,10 @@
       </section>
       <section id="en-deletion">
         <h2>6. Retention and deleting your data</h2>
-        <p><strong>Thru3D:</strong> use the library history controls to disable or clear history, and Settings → Video → Clear cache to remove thumbnails. Remove saved cloud accounts and network servers from their management screens. Clearing app storage in device settings or uninstalling the app removes local app data. Source media and files outside app storage must be deleted separately. Revoke cloud sessions with the provider to invalidate them there; platform backups may need separate removal.</p>
+        <p><strong>Thru3D:</strong> use the app’s available history and cache controls to disable or clear history and remove thumbnails. On Quest/PICO, thumbnails can be cleared through Settings → Video → Clear cache. Remove saved cloud accounts and network servers from their management screens. On Android, clearing app storage in device settings or uninstalling removes local app data. On iOS and visionOS, use Delete App to remove the app and its local app-container data; offloading an iOS app keeps its documents and data. Source media, exported files and platform backups must be deleted separately. Revoke cloud sessions with the provider to invalidate them there. Live camera frames are not retained and do not form part of playback history or thumbnails.</p>
         <p><strong>Windows server:</strong> stop the server to stop sharing, or remove a shared folder from its configuration to stop exposing that folder. When no longer needed, delete saved application configuration, logs and caches, and remove generated output separately. Local files remain until cleared, replaced or deleted.</p>
         <p><strong>Support:</strong> we retain correspondence only as needed to resolve your request, handle related issues or meet legal obligations, then delete or anonymize it. You can request deletion at any time. We do not hold a central copy of your local library or viewing history.</p>
-        <p>To request access, correction or deletion of personal data held by us, email <a href="mailto:ffskyteam@gmail.com?subject=Privacy%20data%20deletion%20request">ffskyteam@gmail.com</a> with the subject <strong>“Privacy data deletion request”</strong>, the product name and enough information to identify your previous contact. We may request minimal verification and will respond within the period required by applicable law. We will explain any legally required retention. For data held independently by Meta, PICO or a cloud provider, contact that provider or use its privacy controls.</p>
+        <p>To request access, correction or deletion of personal data held by us, email <a href="mailto:ffskyteam@gmail.com?subject=Privacy%20data%20deletion%20request">ffskyteam@gmail.com</a> with the subject <strong>“Privacy data deletion request”</strong>, the product name and enough information to identify your previous contact. We may request minimal verification and will respond within the period required by applicable law. We will explain any legally required retention. For data held independently by Apple, Meta, PICO or a cloud provider, contact that provider or use its privacy controls.</p>
       </section>
       <section id="en-rights">
         <h2>7. Use, security and your rights</h2>
@@ -93,14 +95,14 @@
       <header class="privacy-heading">
         <p class="eyebrow">FFSKY / THRU3D / VR VIDEO PASSTHROUGH SERVER</p>
         <h1>隐私政策</h1>
-        <p class="privacy-date"><time datetime="2026-10-07">生效及更新日期：2026 年 10 月 7 日</time></p>
-        <p>本政策适用于 Meta Quest、PICO 版 <strong>Thru3D Media Player</strong>（应用 ID：<code>com.wapok.thru3d</code>）、Windows 版 <strong>Thru3D媒体服务器</strong>及本网站。上述产品由 <strong>FFSKY</strong> 提供，制作人为 <strong>FFSKYChocobo</strong>。</p>
-        <p>媒体在您的头显或电脑上处理，无需注册 FFSKY 账号。我们不将媒体库或观看历史自动上传至我们的服务器，也不使用广告或用户行为分析 SDK。</p>
+        <p class="privacy-date"><time datetime="2026-10-15">生效及更新日期：2026 年 10 月 15 日</time></p>
+        <p>本政策适用于 iOS、Apple Vision Pro（visionOS）、Meta Quest、PICO 版 <strong>Thru3D Media Player</strong>（Quest/PICO 应用 ID：<code>com.wapok.thru3d</code>）、Windows 版 <strong>Thru3D媒体服务器</strong>及本网站。上述产品由 <strong>FFSKY</strong> 提供，制作人为 <strong>FFSKYChocobo</strong>。功能和权限因平台及应用版本而异；下述说明适用于提供并使用相应功能的情况。</p>
+        <p>媒体在您的手机、头显或电脑上处理，无需注册 FFSKY 账号。我们不将媒体库或观看历史自动上传至我们的服务器，也不使用广告或用户行为分析 SDK。</p>
         <a class="privacy-contact" href="mailto:ffskyteam@gmail.com">ffskyteam@gmail.com <span aria-hidden="true">↗</span></a>
       </header>
       <nav class="privacy-contents" aria-label="隐私政策">
         <a href="#zh-data">数据与用途</a>
-        <a href="#zh-xr">头显与权限</a>
+        <a href="#zh-xr">相机与权限</a>
         <a href="#zh-connections">网络连接</a>
         <a href="#zh-deletion">删除数据</a>
       </nav>
@@ -111,25 +113,27 @@
         <p>本地诊断日志可能包含设备或运行环境、错误、性能信息、媒体路径和网络地址。PC 服务器请求日志可能包含客户端 IP 和请求的地址或媒体。日志不会自动发送给我们。</p>
       </section>
       <section id="zh-xr">
-        <h2>2. 头显数据与权限</h2>
-        <p>Thru3D 使用头显运行时提供的头部和手柄位姿、按键输入，以及在启用且受支持时的手部关节和手势数据，用于视角渲染与交互。这些数据在使用过程中处理；我们不会建立生物特征档案，也不会将其发送到我们的服务器。透视通过平台合成器显示周围环境，应用不采集、保存或上传原始透视摄像头画面，也不请求麦克风录音、眼动追踪、通讯录或精确定位权限。</p>
-        <p><strong>媒体与存储：</strong>访问视频、图片、音频及相关文件，用于浏览和播放。在支持的 Android 版本中，“所有文件访问权限”用于浏览共享存储中的目录；也可通过系统文件选择器授予所选文件访问权限。</p>
-        <p><strong>网络、Wi-Fi 状态与组播：</strong>用于连接所选来源，发现局域网 DLNA/SMB 服务器。互联网连接用于远程媒体和可选网盘功能。头部追踪、可选手部追踪与透视用于沉浸式播放和操作。</p>
-        <p>您可在设备设置中拒绝或撤销相应权限，并关闭可选功能。依赖这些权限的功能可能因此无法使用。</p>
+        <h2>2. 相机、空间数据与权限</h2>
+        <p><strong>iOS 相机：</strong>开启人物混合现实或 VR 透视时，Thru3D 会在获得您的相机授权后使用后置相机，实时显示周围环境并与播放的媒体合成。相机画面仅在您的设备内存中为当前实时显示进行临时处理。Thru3D 不录制这些画面，不将其保存为照片、视频、缩略图或缓存文件，也不上传或分享给 FFSKY 或第三方。我们不将相机画面用于广告、分析统计、身份识别或 AI 模型训练。</p>
+        <p><strong>头显环境透视：</strong>Apple Vision Pro 由 visionOS 系统合成器显示周围环境，Thru3D 不直接读取设备的原始相机画面。Meta Quest、PICO 的透视同样使用平台的透视或合成服务。使用透视会涉及设备相机，但 Thru3D 不录制、保存或上传这些相机画面。</p>
+        <p><strong>空间输入：</strong>Thru3D 使用头显运行时提供的头部和手柄位姿、按键输入，以及在启用且受支持时的手部关节和手势数据，用于视角渲染与交互。visionOS 的常规注视和手势交互也由系统处理，应用不会因此获得原始眼动数据。这些输入在使用过程中处理；我们不会建立生物特征档案，也不会将其发送到我们的服务器。应用不请求麦克风录音、原始眼动追踪、通讯录或精确定位权限。</p>
+        <p><strong>媒体与存储：</strong>访问视频、图片、音频及相关文件，用于浏览和播放。Apple 平台通过系统文件或照片选择及相应权限，控制对您所选或授权媒体的访问。在支持的 Android 版本中，“所有文件访问权限”用于浏览共享存储中的目录；也可通过系统文件选择器授予所选文件访问权限。</p>
+        <p><strong>网络与本地网络：</strong>用于连接所选媒体来源及发现局域网服务器。iOS、visionOS 在连接或发现需要时请求本地网络权限；Android 的 Wi-Fi 状态与组播权限用于辅助局域网发现。互联网连接用于远程媒体和可选网盘功能。</p>
+        <p>您可在设备设置中拒绝或撤销相应权限，包括 iOS 相机权限及 iOS、visionOS 适用的本地网络权限，并关闭可选功能。关闭 iOS 人物混合现实或 VR 透视会停止该功能对实时相机画面的使用。拒绝相机权限将无法使用这些依赖相机的功能；不依赖相机的媒体播放仍可使用。</p>
       </section>
       <section id="zh-connections">
         <h2>3. 网络来源与网盘账号</h2>
         <p>Windows 服务器将您配置的共享目录、媒体信息和媒体流提供给能够连接其 DLNA/HTTP 服务的客户端。Thru3D 直接连接您选择的 DLNA、SMB 或其他媒体来源。这些服务器会收到设备网络地址、浏览或播放请求，以及在需要认证时的身份验证信息。请使用可信网络：局域网 DLNA/HTTP 通信可能不加密。</p>
-        <p>保存 SMB 来源时，Thru3D 在本地保存服务器地址、共享路径及您提供的用户名；保存的密码使用 Android Keystore 加密。可选的 <strong>115、百度网盘</strong>连接会处理账号标签、登录会话 Cookie、文件列表和播放地址。保存的网盘会话在头显上使用 Android Keystore 加密，并排除在 Android 应用备份之外。</p>
+        <p>保存 SMB 来源时，Thru3D 在本地保存服务器地址、共享路径及您提供的用户名。Quest/PICO 版保存的密码使用 Android Keystore 加密。在提供可选网盘功能的平台上，包括 <strong>115、百度网盘</strong>在内的连接会处理账号标签、登录会话 Cookie、文件列表和播放地址。Quest/PICO 版保存的网盘会话在头显上使用 Android Keystore 加密，并排除在 Android 应用备份之外。</p>
         <p>网盘登录由所选服务商处理。应用向对应服务发送会话凭据和文件请求，播放时还会连接其媒体或 CDN 服务器。服务商按自身政策接收您的 IP 地址和请求信息。这些访问不经过 FFSKY 运营的云端中转服务器。从 Thru3D 移除网盘账号不会删除服务商处的账号或文件。</p>
         <p>下载软件或 PC 所需的模型、运行组件时，会连接您选择的下载来源，例如 GitHub、Hugging Face、配置的镜像或 NVIDIA。下载方会收到 IP 地址、所请求资源等常规网络请求信息。外部网站与服务适用各自的隐私条款。</p>
         <p>如果在 Thru3D 中开启<strong>局域网 WebDAV 共享</strong>，同一局域网内持有生成的共享密码的设备可通过您的头显浏览和播放已连接的网盘文件。此功能需主动开启，使用未经传输加密的 HTTP。请仅向可信用户提供密码；关闭共享可停止访问，重置共享密码可使旧凭据失效。</p>
-        <p>对于其他媒体服务器连接，应用还会按需处理服务器名称或地址、账号 ID、用户名及 API 密钥或访问令牌。保存的服务器配置和凭据在头显上通过 Android Keystore 加密，仅用于向您选择的服务器认证、浏览和播放；封面图片可能缓存在本地。</p>
+        <p>对于其他媒体服务器连接，应用还会按需处理服务器名称或地址、账号 ID、用户名及 API 密钥或访问令牌。保存的服务器配置和凭据存储在本地；Quest/PICO 版在头显上通过 Android Keystore 加密。这些信息仅用于向您选择的服务器认证、浏览和播放；封面图片可能缓存在本地。</p>
       </section>
       <section id="zh-platforms">
-        <h2>4. Meta Quest、PICO 与第三方服务</h2>
-        <p>Meta 与 PICO 独立运营商店、账号、设备服务和运行时，可能按各自政策处理购买、设备和诊断数据。我们不索取您的 Meta/PICO 密码，也不导入好友列表。平台自身的数据处理与本政策描述的本地处理相互独立。</p>
-        <p>您可以在对应平台设置中管理隐私、诊断和账号选项。请参阅 <a href="https://www.meta.com/legal/privacy-policy/">Meta</a>、<a href="https://www.picoxr.com/global/legal/privacy-policy">PICO</a> 及 <a href="https://policies.google.com/privacy">Google / Gmail</a> 的隐私政策。网盘账号请参阅所选服务商登录时展示的隐私政策。</p>
+        <h2>4. Apple、Meta Quest、PICO 与第三方服务</h2>
+        <p>Apple、Meta 与 PICO 独立运营商店、账号、设备服务和运行时，可能按各自政策处理购买、设备和诊断数据。Apple 还负责 visionOS 系统环境透视及常规系统交互。我们不索取您的 Apple 账户、Meta 或 PICO 密码，也不导入好友列表。平台自身的数据处理与本政策描述的本地处理相互独立。</p>
+        <p>您可以在对应平台设置中管理隐私、诊断和账号选项。请参阅 <a href="https://www.apple.com/legal/privacy/en-ww/">Apple</a>、<a href="https://www.meta.com/legal/privacy-policy/">Meta</a>、<a href="https://www.picoxr.com/global/legal/privacy-policy">PICO</a> 及 <a href="https://policies.google.com/privacy">Google / Gmail</a> 的隐私政策。网盘账号请参阅所选服务商登录时展示的隐私政策。</p>
       </section>
       <section id="zh-website">
         <h2>5. 网站与主动联系</h2>
@@ -138,10 +142,10 @@
       </section>
       <section id="zh-deletion">
         <h2>6. 保存期限与删除方式</h2>
-        <p><strong>Thru3D：</strong>通过媒体库的历史控制关闭保存或清除历史，通过“设置 → 视频 → 清除缓存”移除缩略图。在相应管理界面移除已保存的网盘账号和网络服务器。通过设备设置清除应用存储，或卸载应用，可删除本地应用数据。源媒体和应用存储之外的文件需另行删除。如需使网盘会话在服务商处失效，请同时通过服务商撤销会话；平台备份可能需要另行删除。</p>
+        <p><strong>Thru3D：</strong>可使用应用提供的历史与缓存管理功能关闭或清除历史、删除缩略图；Quest/PICO 版可在“设置 → 视频 → 清除缓存”中删除缩略图。在相应管理界面移除已保存的网盘账号和网络服务器。Android 可在系统设置中清除应用存储或卸载应用。iOS、visionOS 可通过“删除 App”移除应用及其本地应用容器数据；iOS 的“卸载 App”会保留文稿与数据。源媒体、导出文件及平台备份需另行删除。如需使网盘会话在服务商处失效，请同时通过服务商撤销会话。实时相机画面不会留存，也不会成为播放历史或缩略图的一部分。</p>
         <p><strong>Windows 服务器：</strong>停止服务器可停止共享，从配置中移除共享目录可停止公开该目录。无需保留时，删除应用保存的配置、日志和缓存，并按需另行删除生成的输出文件。本地文件会保留至被清理、覆盖或删除。</p>
         <p><strong>支持邮件：</strong>仅在解决请求、处理相关问题或履行法律义务所需期间保存，之后删除或匿名化。您可随时申请删除。我们没有集中保存您的本地媒体库或观看历史副本。</p>
-        <p>如需访问、更正或删除我们持有的个人信息，请发送邮件至 <a href="mailto:ffskyteam@gmail.com?subject=Privacy%20data%20deletion%20request">ffskyteam@gmail.com</a>，主题注明<strong>“隐私数据删除申请”</strong>，附上产品名称及识别此前联系记录所需的信息。我们可能进行最低限度的必要身份核验，并在适用法律规定的期限内处理；如需依法保留部分信息，将说明原因。Meta、PICO 或网盘服务商独立持有的数据，请联系服务商或通过其隐私设置处理。</p>
+        <p>如需访问、更正或删除我们持有的个人信息，请发送邮件至 <a href="mailto:ffskyteam@gmail.com?subject=Privacy%20data%20deletion%20request">ffskyteam@gmail.com</a>，主题注明<strong>“隐私数据删除申请”</strong>，附上产品名称及识别此前联系记录所需的信息。我们可能进行最低限度的必要身份核验，并在适用法律规定的期限内处理；如需依法保留部分信息，将说明原因。Apple、Meta、PICO 或网盘服务商独立持有的数据，请联系服务商或通过其隐私设置处理。</p>
       </section>
       <section id="zh-rights">
         <h2>7. 使用、安全与您的权利</h2>
@@ -162,14 +166,14 @@
       <header class="privacy-heading">
         <p class="eyebrow">FFSKY / THRU3D / VR VIDEO PASSTHROUGH SERVER</p>
         <h1>プライバシーポリシー</h1>
-        <p class="privacy-date"><time datetime="2026-10-07">施行日・最終更新日：2026年10月7日</time></p>
-        <p>本ポリシーは Meta Quest・PICO 向け <strong>Thru3D Media Player</strong>（アプリ ID：<code>com.wapok.thru3d</code>）、Windows 向け <strong>Thru3D Media Server</strong>、および本サイトに適用されます。提供元は <strong>FFSKY</strong>、制作者は <strong>FFSKYChocobo</strong> です。</p>
-        <p>メディアはヘッドセットまたは PC で処理され、FFSKY アカウントの登録は不要です。ライブラリや視聴履歴を当方サーバーへ自動送信せず、広告・行動分析 SDK も使用しません。</p>
+        <p class="privacy-date"><time datetime="2026-10-15">施行日・最終更新日：2026年10月15日</time></p>
+        <p>本ポリシーは iOS、Apple Vision Pro（visionOS）、Meta Quest・PICO 向け <strong>Thru3D Media Player</strong>（Quest/PICO のアプリ ID：<code>com.wapok.thru3d</code>）、Windows 向け <strong>Thru3D Media Server</strong>、および本サイトに適用されます。提供元は <strong>FFSKY</strong>、制作者は <strong>FFSKYChocobo</strong> です。機能と権限はプラットフォームやアプリのバージョンによって異なり、以下は対応する機能が提供され、利用される場合に適用されます。</p>
+        <p>メディアはスマートフォン、ヘッドセットまたは PC で処理され、FFSKY アカウントの登録は不要です。ライブラリや視聴履歴を当方サーバーへ自動送信せず、広告・行動分析 SDK も使用しません。</p>
         <a class="privacy-contact" href="mailto:ffskyteam@gmail.com">ffskyteam@gmail.com <span aria-hidden="true">↗</span></a>
       </header>
       <nav class="privacy-contents" aria-label="プライバシーポリシー">
         <a href="#ja-data">データと目的</a>
-        <a href="#ja-xr">XR と権限</a>
+        <a href="#ja-xr">カメラと権限</a>
         <a href="#ja-connections">ネットワーク接続</a>
         <a href="#ja-deletion">データの削除</a>
       </nav>
@@ -180,25 +184,27 @@
         <p>ローカル診断ログには端末・実行環境、エラー、性能情報、メディアパス、ネットワークアドレスが含まれる場合があります。PC サーバーのリクエストログにはクライアント IP や要求された URL・メディアも含まれる場合があります。ログは当方へ自動送信されません。</p>
       </section>
       <section id="ja-xr">
-        <h2>2. ヘッドセットのデータと権限</h2>
-        <p>Thru3D はランタイムが提供する頭部・コントローラーの位置と向き、ボタン入力、および対応端末で有効にした場合の手の関節・ジェスチャーデータを視点の描画と操作に使用します。これらは利用中に処理され、生体認証プロファイルの作成や当方サーバーへの送信には使用しません。パススルーはプラットフォームのコンポジターを通して周囲を表示します。アプリは生のパススルーカメラ画像を取得・保存・アップロードせず、マイク録音、視線追跡、連絡先、正確な位置情報の権限も要求しません。</p>
-        <p><strong>メディアとストレージ：</strong>動画、画像、音声、関連ファイルへのアクセスを参照・再生に使用します。対応する Android では「すべてのファイルへのアクセス」で共有ストレージのフォルダーを参照できます。システムのファイル選択画面で個別ファイルへのアクセスを許可することもできます。</p>
-        <p><strong>ネットワーク・Wi-Fi 状態・マルチキャスト：</strong>選択したソースへの接続とローカル DLNA/SMB サーバーの検出に使用します。インターネットはリモートメディアや任意のクラウド接続に使用します。頭部追跡、任意のハンドトラッキング、パススルーを没入型再生と操作に使用します。</p>
-        <p>端末設定で対象の権限を拒否・取り消し、任意の機能を無効にできます。そのアクセスに依存する機能は使用できなくなる場合があります。</p>
+        <h2>2. カメラ、空間データ、権限</h2>
+        <p><strong>iOS のカメラ：</strong>人物の複合現実表示または VR パススルーを有効にすると、Thru3D は利用者の許可を得て背面カメラを使用し、周囲のライブ映像を再生中のメディアと合成します。カメラ映像はライブ表示のために端末のメモリ内で一時的にのみ処理します。Thru3D は映像を録画せず、写真、動画、サムネイル、キャッシュファイルとして保存せず、FFSKY や第三者へアップロード・共有しません。広告、行動分析、本人識別、AI モデルの学習にも使用しません。</p>
+        <p><strong>ヘッドセットのパススルー：</strong>Apple Vision Pro では visionOS のシステムコンポジターが周囲を表示し、Thru3D は端末の生のカメラ映像に直接アクセスしません。Meta Quest・PICO でもプラットフォームのパススルー・合成サービスを使用します。パススルーには端末のカメラが使われますが、Thru3D はその映像を録画、保存、アップロードしません。</p>
+        <p><strong>空間入力：</strong>Thru3D はランタイムが提供する頭部・コントローラーの位置と向き、ボタン入力、および対応端末で有効にした場合の手の関節・ジェスチャーデータを視点の描画と操作に使用します。visionOS の通常の視線・ジェスチャー操作もシステムが処理し、アプリに生の視線データを渡しません。これらは利用中に処理され、生体認証プロファイルの作成や当方サーバーへの送信には使用しません。アプリはマイク録音、生の視線追跡、連絡先、正確な位置情報の権限を要求しません。</p>
+        <p><strong>メディアとストレージ：</strong>動画、画像、音声、関連ファイルへのアクセスを参照・再生に使用します。Apple プラットフォームではシステムのファイル・写真選択と適用される権限により、選択または許可したメディアへのアクセスを管理します。対応する Android では「すべてのファイルへのアクセス」で共有ストレージのフォルダーを参照できます。システムのファイル選択画面で個別ファイルへのアクセスを許可することもできます。</p>
+        <p><strong>ネットワークとローカルネットワーク：</strong>選択したメディアソースへの接続とローカルサーバーの検出に使用します。iOS・visionOS では接続や検出に必要な場合にローカルネットワークの許可を求めます。Android の Wi-Fi 状態・マルチキャスト権限もローカル検出に使用します。インターネットはリモートメディアや任意のクラウド接続に使用します。</p>
+        <p>端末設定で対象の権限（iOS のカメラと、iOS・visionOS で適用されるローカルネットワークへのアクセスを含む）を拒否・取り消し、任意の機能を無効にできます。iOS の複合現実表示や VR パススルーを無効にすると、その機能でのライブカメラ映像の使用を停止します。カメラを許可しない場合はカメラを必要とする機能が使用できませんが、カメラを使わないメディア再生は引き続き利用できます。</p>
       </section>
       <section id="ja-connections">
         <h2>3. ネットワークソースとクラウドアカウント</h2>
         <p>Windows サーバーは設定した共有フォルダー、メディア情報、ストリームを、その DLNA/HTTP サービスへ接続できるクライアントに提供します。Thru3D は選択した DLNA、SMB などのメディアソースへ直接接続します。接続先はネットワークアドレス、参照・再生リクエスト、必要な場合は認証情報を受け取ります。ローカル DLNA/HTTP 通信は暗号化されない場合があるため、信頼できるネットワークを使用してください。</p>
-        <p>SMB ソースを保存すると、サーバーアドレス、共有パス、入力したユーザー名を端末内に保存し、パスワードは Android Keystore で暗号化します。任意の <strong>115・Baidu Netdisk</strong> 接続はアカウントのラベル、ログインセッション Cookie、ファイル一覧、再生 URL を処理します。保存するクラウドセッションはヘッドセットの Android Keystore で暗号化し、Android アプリバックアップから除外します。</p>
+        <p>SMB ソースを保存すると、サーバーアドレス、共有パス、入力したユーザー名を端末内に保存します。Quest/PICO 版では保存するパスワードを Android Keystore で暗号化します。対応プラットフォームでの任意のクラウド接続（<strong>115・Baidu Netdisk</strong> など）はアカウントのラベル、ログインセッション Cookie、ファイル一覧、再生 URL を処理します。Quest/PICO 版のクラウドセッションはヘッドセットの Android Keystore で暗号化し、Android アプリバックアップから除外します。</p>
         <p>クラウドのログインは選択した事業者が処理します。アプリはセッション認証情報とファイルリクエストをそのサービスへ送り、再生時にはメディア・CDN サーバーにも接続します。事業者は自身のポリシーに基づき IP アドレスやリクエスト情報を受け取ります。FFSKY 運営のクラウド中継サーバーは使用しません。Thru3D から削除しても、事業者のアカウントやファイルは削除されません。</p>
         <p>ソフトウェアや PC 用モデル・実行コンポーネントのダウンロード時には、GitHub、Hugging Face、設定したミラー、NVIDIA など選択した配信元に接続します。配信元は IP アドレスや要求されたリソースなど通常の通信情報を受け取ります。外部サイト・サービスには各自のプライバシー規約が適用されます。</p>
         <p>Thru3D の<strong>LAN WebDAV 共有</strong>を有効にすると、生成された共有パスワードを持つローカルネットワーク上の端末が、ヘッドセットを介して接続済みクラウドのファイルを参照・再生できます。この機能は任意で、転送が暗号化されない HTTP を使用します。パスワードは信頼できる相手にのみ共有し、アクセスを停止するには共有を無効にするか、パスワードを再設定して古い認証情報を無効にしてください。</p>
-        <p>その他のメディアサーバー接続では、必要に応じてサーバー名・アドレス、アカウント ID、ユーザー名、API キーやアクセストークンも処理します。保存する設定と認証情報はヘッドセットの Android Keystore で暗号化し、選択したサーバーへの認証、参照、再生にのみ使用します。カバー画像は端末内にキャッシュされる場合があります。</p>
+        <p>その他のメディアサーバー接続では、必要に応じてサーバー名・アドレス、アカウント ID、ユーザー名、API キーやアクセストークンも処理します。設定と認証情報は端末内に保存し、Quest/PICO 版ではヘッドセットの Android Keystore で暗号化します。これらは選択したサーバーへの認証、参照、再生にのみ使用します。カバー画像は端末内にキャッシュされる場合があります。</p>
       </section>
       <section id="ja-platforms">
-        <h2>4. Meta Quest、PICO と第三者サービス</h2>
-        <p>Meta と PICO はストア、アカウント、端末サービス、ランタイムを独立して運営し、各自のポリシーに基づいて購入・端末・診断データを処理する場合があります。当方は Meta/PICO のパスワードを要求せず、フレンドリストも取り込みません。プラットフォーム側のデータ処理は、ここで説明するローカル処理とは別です。</p>
-        <p>プライバシー、診断、アカウントの設定は各プラットフォームで管理できます。<a href="https://www.meta.com/legal/privacy-policy/">Meta</a>、<a href="https://www.picoxr.com/global/legal/privacy-policy">PICO</a>、<a href="https://policies.google.com/privacy">Google / Gmail</a> のプライバシーポリシーをご確認ください。クラウドアカウントについてはログイン時に表示される事業者のポリシーをご確認ください。</p>
+        <h2>4. Apple、Meta Quest、PICO と第三者サービス</h2>
+        <p>Apple、Meta、PICO はストア、アカウント、端末サービス、ランタイムを独立して運営し、各自のポリシーに基づいて購入・端末・診断データを処理する場合があります。Apple は visionOS のシステムパススルーと通常のシステム操作も処理します。当方は Apple Account、Meta、PICO のパスワードを要求せず、フレンドリストも取り込みません。プラットフォーム側のデータ処理は、ここで説明するローカル処理とは別です。</p>
+        <p>プライバシー、診断、アカウントの設定は各プラットフォームで管理できます。<a href="https://www.apple.com/legal/privacy/en-ww/">Apple</a>、<a href="https://www.meta.com/legal/privacy-policy/">Meta</a>、<a href="https://www.picoxr.com/global/legal/privacy-policy">PICO</a>、<a href="https://policies.google.com/privacy">Google / Gmail</a> のプライバシーポリシーをご確認ください。クラウドアカウントについてはログイン時に表示される事業者のポリシーをご確認ください。</p>
       </section>
       <section id="ja-website">
         <h2>5. ウェブサイトとお問い合わせ</h2>
@@ -207,10 +213,10 @@
       </section>
       <section id="ja-deletion">
         <h2>6. 保存期間と削除方法</h2>
-        <p><strong>Thru3D：</strong>ライブラリの履歴操作で保存を無効にするか履歴を消去し、「設定 → 動画 → キャッシュを削除」でサムネイルを消去できます。保存したクラウドアカウントやネットワークサーバーは各管理画面で削除できます。端末設定でアプリのストレージを消去するかアンインストールすると、ローカルのアプリデータが削除されます。元のメディアやアプリ領域外のファイルは別途削除してください。クラウドセッションは事業者側でも取り消すと無効になります。プラットフォームのバックアップは別途削除が必要な場合があります。</p>
+        <p><strong>Thru3D：</strong>アプリに用意された履歴・キャッシュの管理機能で履歴保存の無効化、履歴やサムネイルの消去が可能です。Quest/PICO 版では「設定 → 動画 → キャッシュを削除」でサムネイルを消去できます。保存したクラウドアカウントやネットワークサーバーは各管理画面で削除できます。Android では端末設定でアプリのストレージを消去するかアンインストールします。iOS・visionOS では「App を削除」でアプリとローカルのアプリコンテナ内データを削除できます。iOS の「App を取り除く」は書類とデータを保持します。元のメディア、書き出したファイル、プラットフォームのバックアップは別途削除してください。クラウドセッションは事業者側でも取り消すと無効になります。ライブカメラ映像は保持せず、再生履歴やサムネイルにも含まれません。</p>
         <p><strong>Windows サーバー：</strong>サーバーを停止すると共有が停止し、設定から共有フォルダーを削除するとそのフォルダーの公開が停止します。不要になった設定、ログ、キャッシュを削除し、生成した出力も必要に応じて別途削除してください。ローカルファイルは消去、上書き、削除されるまで残ります。</p>
         <p><strong>サポート：</strong>お問い合わせと関連問題の解決または法的義務の履行に必要な期間のみ保存し、その後削除または匿名化します。いつでも削除を依頼できます。当方はローカルライブラリや視聴履歴のコピーを一元的に保有していません。</p>
-        <p>当方が保有する個人データの開示・訂正・削除は、<a href="mailto:ffskyteam@gmail.com?subject=Privacy%20data%20deletion%20request">ffskyteam@gmail.com</a> へ、件名 <strong>「Privacy data deletion request」</strong>、製品名、過去のお問い合わせの特定に必要な情報を添えて依頼してください。必要最小限の本人確認をお願いする場合があり、適用法令が定める期間内に対応します。法令上必要な保存があれば説明します。Meta、PICO、クラウド事業者が独立して保有するデータは各事業者の窓口やプライバシー設定をご利用ください。</p>
+        <p>当方が保有する個人データの開示・訂正・削除は、<a href="mailto:ffskyteam@gmail.com?subject=Privacy%20data%20deletion%20request">ffskyteam@gmail.com</a> へ、件名 <strong>「Privacy data deletion request」</strong>、製品名、過去のお問い合わせの特定に必要な情報を添えて依頼してください。必要最小限の本人確認をお願いする場合があり、適用法令が定める期間内に対応します。法令上必要な保存があれば説明します。Apple、Meta、PICO、クラウド事業者が独立して保有するデータは各事業者の窓口やプライバシー設定をご利用ください。</p>
       </section>
       <section id="ja-rights">
         <h2>7. 利用、安全性、利用者の権利</h2>

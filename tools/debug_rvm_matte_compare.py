@@ -10,9 +10,11 @@ import sys
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).absolute().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+from media_library import safe_resolve_path
 
 VARIANTS = [
     ("full_sbs_batch1", 1024, 0.5, 0, 0),
@@ -142,7 +144,7 @@ def _resolve_video(value: str):
     ]
     for candidate in candidates:
         if candidate.exists():
-            return candidate.resolve()
+            return safe_resolve_path(candidate)
     raise FileNotFoundError(value)
 
 
@@ -184,7 +186,7 @@ def _patch_runtime_tempdir(runtime_tmp: Path) -> None:
 
 def _worker(args: argparse.Namespace) -> int:
     _apply_ui_cuda_dll_environment()
-    os.environ["PT_MODEL_PATH"] = str(Path(args.model).resolve())
+    os.environ["PT_MODEL_PATH"] = str(safe_resolve_path(Path(args.model)))
     os.environ["PT_MATTING_INPUT_SIZE"] = str(args.input_size)
     os.environ["PT_RVM_DOWNSAMPLE_RATIO"] = str(args.downsample_ratio)
     os.environ["PT_MATTING_SBS_BATCH"] = str(args.sbs_batch)
@@ -217,7 +219,7 @@ def _worker(args: argparse.Namespace) -> int:
 
     from pipeline.matting import Matter
 
-    out_dir = Path(args.out_dir).resolve() / args.variant_label
+    out_dir = safe_resolve_path(Path(args.out_dir)) / args.variant_label
     out_dir.mkdir(parents=True, exist_ok=True)
     matter = Matter()
     active = matter.sess.get_providers()
@@ -287,13 +289,13 @@ def _worker(args: argparse.Namespace) -> int:
 def _parent(args: argparse.Namespace) -> int:
     from ui.services.process_helpers import base_environment
 
-    out_dir = Path(args.out_dir).resolve()
+    out_dir = safe_resolve_path(Path(args.out_dir))
     out_dir.mkdir(parents=True, exist_ok=True)
     model = Path(args.model)
     if not model.is_absolute():
         model = Path.cwd() / model
 
-    reuse_root = Path(args.reuse_first_variant_from).resolve() if args.reuse_first_variant_from else None
+    reuse_root = safe_resolve_path(Path(args.reuse_first_variant_from)) if args.reuse_first_variant_from else None
     for idx, (label, input_size, ratio, split_sbs, sbs_batch) in enumerate(VARIANTS):
         if idx == 0 and reuse_root is not None:
             src_root = reuse_root / label
@@ -302,7 +304,7 @@ def _parent(args: argparse.Namespace) -> int:
             continue
         cmd = [
             sys.executable,
-            str(Path(__file__).resolve()),
+            str(Path(__file__).absolute()),
             "--worker",
             "--variant-label",
             label,

@@ -24,7 +24,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 from pipeline.passthrough_vmp4_frames import iter_vmp4_frames_range  # noqa: E402
 from pipeline.ffmpeg_io import probe_cached  # noqa: E402

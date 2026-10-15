@@ -15,7 +15,7 @@ import torch.nn as nn
 
 
 def repo_root() -> Path:
-    return Path(__file__).resolve().parents[1]
+    return Path(__file__).absolute().parents[1]
 
 
 def install_compat_shims() -> None:
@@ -418,9 +418,9 @@ def main() -> None:
     if args.batch_size < 1:
         raise ValueError("--batch-size must be >= 1.")
 
-    source_root = args.source_root.resolve()
-    checkpoint_path = args.checkpoint.resolve()
-    output_path = (args.output or default_output_path(args.width, args.height)).resolve()
+    source_root = args.source_root.absolute()
+    checkpoint_path = args.checkpoint.absolute()
+    output_path = (args.output or default_output_path(args.width, args.height)).absolute()
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     device = select_device(args.device)

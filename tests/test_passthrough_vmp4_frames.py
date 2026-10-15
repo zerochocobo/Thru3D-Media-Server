@@ -521,3 +521,31 @@ class SeekBypassesTheFillerDebounceTests(unittest.TestCase):
         existing, got, started = self._run(need_gop=2, cursor=100)
         self.assertIsNot(got, existing)
         self.assertEqual(len(started), 1)
+
+
+def test_filler_failure_keeps_traceback_and_returns_matter(monkeypatch, caplog):
+    from unittest.mock import Mock
+
+    from http_app import routes_media as routes
+    from pipeline import pynv_stream
+
+    matter = object()
+    release = Mock()
+    monkeypatch.setattr(routes, "acquire_matter", lambda **kwargs: matter)
+    monkeypatch.setattr(routes, "release_matter", release)
+
+    def fail_frames(*args, **kwargs):
+        raise RuntimeError("CUDA failure 700: probe failure")
+
+    monkeypatch.setattr(pynv_stream, "iter_pynv_passthrough_annexb_frames", fail_frames)
+    filler = routes._Vmp4FramesFiller(digest="test", cache_dir=Path("unused"), output_mode="face_beauty")
+    layout = SimpleNamespace(fps=60, frame_count=1, frames=[SimpleNamespace(budget=1024)],
+                             source_budget=False, source_path=Path("unused.mp4"), processing_settings={})
+    routes._vmp4_frames_filler_worker(filler, layout)
+
+    assert filler.state == "failed"
+    assert filler.done_event.is_set()
+    release.assert_called_once_with(matter)
+    record = next(r for r in caplog.records if "frames filler failed" in r.getMessage())
+    assert record.exc_info and record.exc_info[0] is RuntimeError
+    assert "mode=face_beauty cursor=0" in record.getMessage()

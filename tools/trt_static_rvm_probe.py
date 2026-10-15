@@ -11,9 +11,11 @@ import time
 import numpy as np
 from utils.rvm_static_onnx import make_static_rvm_model
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).absolute().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+from media_library import safe_resolve_path
 
 
 def _configure_env(cache_dir: Path) -> None:
@@ -22,7 +24,7 @@ def _configure_env(cache_dir: Path) -> None:
     os.environ["PT_RVM_DOWNSAMPLE_RATIO"] = "0.5"
     os.environ["PT_MATTING_WARMUP_RUNS"] = "0"
     os.environ["PT_ONNX_PROVIDERS"] = "TensorrtExecutionProvider,CUDAExecutionProvider,CPUExecutionProvider"
-    os.environ["PT_ONNX_TRT_ENGINE_CACHE_PATH"] = str(cache_dir.resolve())
+    os.environ["PT_ONNX_TRT_ENGINE_CACHE_PATH"] = str(safe_resolve_path(cache_dir))
     os.environ["PT_ONNX_TRT_ENGINE_CACHE_ENABLE"] = "1"
     os.environ["PT_ONNX_TRT_FP16_ENABLE"] = "0"
     os.environ["PT_ONNX_TRT_CUDA_GRAPH_ENABLE"] = "0"

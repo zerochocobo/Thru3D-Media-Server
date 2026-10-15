@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Callable
 
 import config
+from media_library import safe_resolve_path
 from utils.gpu_requirements import detect_nvidia_gpu_requirement
 
 
@@ -49,7 +50,7 @@ def is_frozen_app() -> bool:
 
 def tensorrt_lib_dir() -> Path:
     if is_frozen_app():
-        return Path(sys.executable).resolve().parent / "_internal" / "tensorrt_libs"
+        return safe_resolve_path(Path(sys.executable)).parent / "_internal" / "tensorrt_libs"
     return config.ROOT / ".venv" / "Lib" / "site-packages" / "tensorrt_libs"
 
 

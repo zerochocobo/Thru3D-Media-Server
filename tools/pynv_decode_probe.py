@@ -13,9 +13,10 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from pipeline.pynv_io import PyNvSimpleDecoder  # noqa: E402
 
 
@@ -31,7 +32,7 @@ def _resolve_video(value: str) -> Path:
     p = Path(value)
     if not p.is_absolute():
         p = config.VIDEO_DIR / p
-    return p.resolve()
+    return safe_resolve_path(p)
 
 
 def _copy_sample(plane, count: int = 64) -> bytes:

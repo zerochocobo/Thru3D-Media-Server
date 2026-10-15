@@ -29,7 +29,7 @@ import numpy as np
 import onnxruntime as ort
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).absolute().parents[1]
 DEFAULT_MODEL_URL = (
     "https://huggingface.co/Xenova/clip-vit-base-patch32/resolve/main/"
     "onnx/text_model_quantized.onnx"
@@ -219,7 +219,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-download", action="store_true", help="fail if the ONNX model is not already present")
     args = parser.parse_args(argv)
 
-    model_path = Path(args.model).resolve() if args.model else Path(args.cache).resolve()
+    model_path = Path(args.model).absolute() if args.model else Path(args.cache).absolute()
     if not model_path.exists():
         if args.no_download:
             raise FileNotFoundError(f"CLIP text ONNX model not found: {model_path}")
@@ -228,9 +228,9 @@ def main(argv: list[str] | None = None) -> int:
     class_names = [item.strip() for item in args.classes.split(",") if item.strip()]
     if not class_names:
         raise RuntimeError("at least one class prompt is required")
-    vocab_path = Path(args.vocab).resolve()
-    merges_path = Path(args.merges).resolve()
-    bpe_path = Path(args.bpe).resolve()
+    vocab_path = Path(args.vocab).absolute()
+    merges_path = Path(args.merges).absolute()
+    bpe_path = Path(args.bpe).absolute()
     tokenizer = None
     if vocab_path.exists() and merges_path.exists():
         tokenizer = ClipBpeTokenizer.from_vocab_merges(vocab_path, merges_path)
@@ -258,7 +258,7 @@ def main(argv: list[str] | None = None) -> int:
     txt_feats = _run_text_model(model_path, input_ids)
     if txt_feats.shape != (1, len(class_names), 512):
         raise RuntimeError(f"unexpected txt_feats shape: {txt_feats.shape}")
-    out = Path(args.out).resolve()
+    out = Path(args.out).absolute()
     out.parent.mkdir(parents=True, exist_ok=True)
     np.save(out, txt_feats)
     print(f"[saved] {out}")

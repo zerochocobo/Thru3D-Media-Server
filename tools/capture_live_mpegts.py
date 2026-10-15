@@ -9,7 +9,7 @@ from pathlib import Path
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).absolute().parents[1]
 DEFAULT_OUT = ROOT / "debug_output" / "live_capture.ts"
 
 

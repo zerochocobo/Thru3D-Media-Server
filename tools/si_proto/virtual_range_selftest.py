@@ -20,7 +20,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[2]))
 
 from pipeline.si_virtual_mp4 import (  # noqa: E402
     BoxSplittingSink,

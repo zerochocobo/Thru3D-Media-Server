@@ -17,9 +17,10 @@ import time
 from collections import deque
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from pipeline.pynv_io import GpuNv12AppFrame, PyNvSimpleDecoder  # noqa: E402
 from utils.video_metadata import cfr_source_index, probe_color_metadata, probe_timing_metadata  # noqa: E402
 
@@ -48,7 +49,7 @@ def _resolve_video(value: str) -> Path:
     p = Path(value)
     if not p.is_absolute():
         p = config.VIDEO_DIR / p
-    return p.resolve()
+    return safe_resolve_path(p)
 
 
 def _open_muxer(out: Path, fps: float, src: Path, codec: str):
@@ -168,7 +169,7 @@ def main() -> int:
     target = min(target, max(1, max_target))
     out = Path(args.out) if args.out else config.ROOT / "debug_output" / f"pynv_transcode_delay{args.delay}.mp4"
     if not out.is_absolute():
-        out = (config.ROOT / out).resolve()
+        out = safe_resolve_path(config.ROOT / out)
     out.parent.mkdir(parents=True, exist_ok=True)
 
     enc_kwargs = {

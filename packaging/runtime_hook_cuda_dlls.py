@@ -60,8 +60,8 @@ if sys.platform.startswith("win") and hasattr(os, "add_dll_directory"):
     # driver-JIT fallback.
     os.environ.setdefault("CUPY_COMPILE_WITH_PTX", "0")
 
-    exe_dir = Path(sys.executable).resolve().parent
-    internal_dir = Path(getattr(sys, "_MEIPASS", exe_dir / "_internal")).resolve()
+    exe_dir = Path(sys.executable).absolute().parent
+    internal_dir = Path(getattr(sys, "_MEIPASS", exe_dir / "_internal")).absolute()
     bundled_cuda_root = exe_dir
     bundled_cuda_bin = exe_dir / "bin"
     onnxruntime_capi_dir = internal_dir / "onnxruntime" / "capi"

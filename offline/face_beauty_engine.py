@@ -385,14 +385,15 @@ def onnx_providers(provider: str, cache_key: str, fp16: bool = True,
                 "trt_max_workspace_size": config.ONNX_TRT_MAX_WORKSPACE_BYTES,
                 # Run on the caller's CUDA stream so its kernels and this
                 # inference are ordered without a device-wide synchronise.
-                **({"has_user_compute_stream": "1",
-                    "user_compute_stream": str(stream_ptr)} if stream_ptr else {}),
+                # Zero explicitly selects CUDA's default stream; only None
+                # leaves stream selection to ORT. The option implies the
+                # internal has_user_compute_stream flag (not a TRT option).
+                **({"user_compute_stream": str(stream_ptr)} if stream_ptr is not None else {}),
             },
         ))
     if provider in ("trt", "cuda") and "CUDAExecutionProvider" in available:
-        if stream_ptr:
+        if stream_ptr is not None:
             chain.append(("CUDAExecutionProvider", {
-                "has_user_compute_stream": "1",
                 "user_compute_stream": str(stream_ptr),
             }))
         else:

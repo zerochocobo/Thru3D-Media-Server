@@ -3,10 +3,26 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 import numpy as np
+import pytest
 
 from offline import face_beauty_engine as fb
 from offline.face_beauty_gpu import GpuFaceBeautyProcessor
 from pipeline.pynv_stream import _face_beauty_cfr_plan
+
+
+@pytest.mark.parametrize("stream_ptr", [None, 0, 12345])
+def test_face_beauty_providers_preserve_explicit_default_stream(monkeypatch, stream_ptr):
+    monkeypatch.setattr(fb.ort, "get_available_providers", lambda: [
+        "TensorrtExecutionProvider", "CUDAExecutionProvider", "CPUExecutionProvider"])
+    monkeypatch.setattr(fb, "_trt_cache_dir", lambda key: "unused-test-cache")
+    providers = fb.onnx_providers("trt", "detector", stream_ptr=stream_ptr)
+    options = dict((p, {}) if isinstance(p, str) else p for p in providers)
+    for name in ("TensorrtExecutionProvider", "CUDAExecutionProvider"):
+        assert "has_user_compute_stream" not in options[name]
+        if stream_ptr is None:
+            assert "user_compute_stream" not in options[name]
+        else:
+            assert options[name]["user_compute_stream"] == str(stream_ptr)
 
 
 class _Tracker:

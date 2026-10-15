@@ -23,16 +23,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from pipeline.pynv_io import GpuNv12AppFrame  # noqa: E402
 
 
 def _write_json(path_value: str, data: dict[str, Any]) -> None:
     path = Path(path_value)
     if not path.is_absolute():
-        path = (config.ROOT / path).resolve()
+        path = safe_resolve_path(config.ROOT / path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"[pynv-life] wrote json {path}")
@@ -41,14 +42,14 @@ def _write_json(path_value: str, data: dict[str, Any]) -> None:
 def _write_md(path_value: str, text: str) -> None:
     path = Path(path_value)
     if not path.is_absolute():
-        path = (config.ROOT / path).resolve()
+        path = safe_resolve_path(config.ROOT / path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8-sig")
     print(f"[pynv-life] wrote md {path}")
 
 
 def _resolve_out(path: Path) -> Path:
-    return path.resolve() if path.is_absolute() else (config.ROOT / path).resolve()
+    return safe_resolve_path(path) if path.is_absolute() else safe_resolve_path(config.ROOT / path)
 
 
 def _default_paths(codec: str) -> tuple[Path, Path, Path, Path]:

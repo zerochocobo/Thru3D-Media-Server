@@ -30,13 +30,23 @@ python -m http.server 8785 --bind 127.0.0.1 --directory website
 - Server 使用已有 `soft_mainwindow_{en,cn,jp}.png`；随网站语言切换。
 - 页面的 CSS 光轨与网格为本地代码绘制；没有新增网络图片、字体、统计服务或表单。
 - 三个原有 Player 实拍截图继续作为应用画面展示，未将它们标成 0.6.0 新功能截图。新增空间媒体、照片布局、跟随与配音使用简短功能文案和本地 SVG 图标，不用模拟截图冒充真机效果。
-- 隐私政策只调整图标、品牌导航和 CSS，政策正文与生效日期保持。
+- 隐私政策中英日正文覆盖 iOS、Apple Vision Pro（visionOS）、Quest/PICO、Windows Server 及网站，最近更新日为 2026-10-15。iOS 人物混合现实和 VR 透视使用后置相机；Vision Pro 使用系统环境透视，不直接读取相机原始画面。相机画面仅用于实时显示，不录制、保存或上传。Android Keystore 与 Android 备份排除说明仅适用于 Quest/PICO。
+
+## App Store 隐私资料
+
+- 部署更新后的 `privacy.html` 和 `privacy.js`；沿用 `privacy.css`、`styles.css` 和本地图片。部署后核验 `https://thru3d.com/privacy.html?lang=en`、`?lang=zh`、`?lang=ja` 可以公开访问，再将相应 HTTPS 地址填入 App Store Connect 的 Privacy Policy URL。应用内也应有容易找到的隐私政策入口。本次本地编辑不代表线上已经更新。
+- Apple 版源码在用户另一台 Mac 上。本页的 iOS 相机用途、不保存画面及 Vision Pro 系统环境透视方式依据用户确认；本仓库未核查 Apple 版的 Info.plist、PrivacyInfo.xcprivacy、SDK、凭据保存方式或 App Store Connect 表单。不能把 Quest/PICO 的 Android Keystore 实现当成 Apple 版实现。
+- iOS 的 `NSCameraUsageDescription` 建议与政策一致，明确包含两种用途。中文：`用于人物混合现实和 VR 透视，通过后置相机实时显示周围环境并与播放内容合成；相机画面仅在设备上处理，不录制、保存或上传。` 英文：`Uses the rear camera for person mixed reality and VR passthrough to show your surroundings with media. Camera frames are processed only on your device and are not recorded, saved or uploaded.` 日文：`人物の複合現実表示と VR パススルーのために背面カメラで周囲をリアルタイム表示し、メディアと合成します。映像は端末内でのみ処理し、録画・保存・アップロードしません。` 这些是 Mac 项目待同步文案，并非本仓库已修改系统权限弹窗。
+- Vision Pro 的环境透视由 visionOS 合成器提供，不应仅为了这一功能声明为应用直接读取主相机；只有实际使用相关 API 时才配置对应权限与用途说明。本地网络、所选文件/照片等权限按最终实现核对，拒绝相机权限后仍应支持不依赖相机的播放。
+- Apple 将仅在设备上处理且不发送到服务器的数据视为未“收集”。因此，按当前说明，实时相机画面本身不构成 App Privacy 中收集的照片或视频；这不能单独推出整个 App 都是 Data Not Collected。应核对最终二进制及所有第三方 SDK 的其他数据行为，并使各平台的 App Privacy 回答与实际处理一致。
+- 提交前核对相机功能关闭后停止使用画面、不会写入缩略图/缓存/日志/导出内容、没有上传路径，以及删除数据、撤销权限的说明与实际界面一致。若新增录制、分享或云端处理，先同步更新政策与商店声明。
+- 官方依据：[App Review 5.1.1](https://developer.apple.com/app-store/review/guidelines/#privacy)、[App Privacy Details](https://developer.apple.com/app-store/app-privacy-details/)、[visionOS 隐私与用户偏好](https://developer.apple.com/documentation/visionos/adopting-best-practices-for-privacy)、[NSCameraUsageDescription](https://developer.apple.com/documentation/bundleresources/information-property-list/nscamerausagedescription)。
 
 ## 验证
 
 `node --check website/script.js`、`node --check website/privacy.js`、`git diff --check`。
 
-浏览器检查证据保存在 Git 忽略的 `debug_output/website_20261009/`：桌面/移动三语截图、交互检查脚本及 `verification.json`。验证包含 1440/1024/768/390/320 宽度、资源加载、三语与隐私导航、截图键盘切换/放大、移动菜单、兼容表及 FAQ。浏览器使用本机 Edge，不要求安装 Playwright 浏览器。
+历史浏览器检查证据位于 Git 忽略的 `debug_output/website_20261009/`；不再向此目录新增检查输出。可重建检查与截图统一放 `build/`，临时检查脚本放 `tmp/`。本次隐私页检查输出使用 `build/output/website-privacy-apple/`，浏览器使用本机 Edge，不要求安装 Playwright 浏览器。
 
 ## 0.6.0 Player 内容更新
 

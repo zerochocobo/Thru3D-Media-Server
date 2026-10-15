@@ -16,9 +16,10 @@ import threading
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from utils.ffprobe_json import run_ffprobe_json  # noqa: E402
 
 
@@ -26,14 +27,14 @@ def _resolve_video(value: str) -> Path:
     path = Path(value)
     if not path.is_absolute():
         path = config.VIDEO_DIR / path
-    return path.resolve()
+    return safe_resolve_path(path)
 
 
 def _resolve_path(value: str) -> Path:
     path = Path(value)
     if not path.is_absolute():
         path = config.ROOT / path
-    return path.resolve()
+    return safe_resolve_path(path)
 
 
 def _run(cmd: list[str], timeout: float = 60.0) -> subprocess.CompletedProcess:

@@ -6,6 +6,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from media_library import safe_resolve_path
+
 _FMT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 _ORIGINAL_STDOUT = sys.stdout
 _ORIGINAL_STDERR = sys.stderr
@@ -79,7 +81,7 @@ def setup(level: int = logging.INFO) -> None:
     root = logging.getLogger()
     root.handlers.clear()
     try:
-        base = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[1]
+        base = safe_resolve_path(Path(sys.executable)).parent if getattr(sys, "frozen", False) else Path(__file__).absolute().parents[1]
         log_dir = base / "debug_output"
         log_dir.mkdir(parents=True, exist_ok=True)
         _rotate_server_logs(log_dir)

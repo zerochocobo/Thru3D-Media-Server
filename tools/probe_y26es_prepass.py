@@ -13,7 +13,7 @@ import time
 from pathlib import Path
 from types import SimpleNamespace
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+sys.path.insert(0, str(Path(__file__).absolute().parent.parent))
 
 # Configure runtime cache like offline tools do
 import utils.gpu_runtime_cache as gpu_runtime_cache
@@ -23,6 +23,7 @@ import cv2  # noqa: E402
 import numpy as np  # noqa: E402
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from offline.yolo26m_efficientsam import Yolo26mEfficientSamMasker  # noqa: E402
 from offline.decoded_frames import decoded_frame_to_bgr  # noqa: E402
 
@@ -45,8 +46,8 @@ def main() -> int:
     parser.add_argument("--top-k", type=int, default=0)
     args = parser.parse_args()
 
-    src = Path(args.video).resolve()
-    debug_dir = Path(args.debug_dir).resolve()
+    src = safe_resolve_path(Path(args.video))
+    debug_dir = safe_resolve_path(Path(args.debug_dir))
     debug_dir.mkdir(parents=True, exist_ok=True)
 
     masker = Yolo26mEfficientSamMasker(

@@ -23,9 +23,10 @@ from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 from xml.etree import ElementTree as ET
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 
 SOAP_ACTION = '"urn:schemas-upnp-org:service:ContentDirectory:1#Browse"'
 DIDL_NS = {"d": "urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/"}
@@ -343,7 +344,7 @@ def run(args: argparse.Namespace) -> int:
     if args.out:
         out = Path(args.out)
         if not out.is_absolute():
-            out = (config.ROOT / out).resolve()
+            out = safe_resolve_path(config.ROOT / out)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"[dlna-probe] wrote {out}")

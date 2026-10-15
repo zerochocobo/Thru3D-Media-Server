@@ -21,9 +21,10 @@ import time
 from collections import defaultdict
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path  # noqa: E402
 from utils.bitrate_estimator import effective_default_bitrate, parse_bitrate, source_video_bitrate  # noqa: E402
 from utils.gpu_runtime_cache import configure_gpu_runtime_cache  # noqa: E402
 from utils.offline_outputs import (  # noqa: E402
@@ -62,7 +63,7 @@ GPU_CACHE_ENV = configure_gpu_runtime_cache()
 def _configure_offline_rvm_tensorrt(model_path: Path) -> bool:
     providers = [p.strip() for p in config.ONNX_PROVIDERS if p.strip()]
     wants_trt = "TensorrtExecutionProvider" in providers
-    is_mobile = model_path.resolve() == original_rvm_model_path().resolve()
+    is_mobile = safe_resolve_path(model_path) == safe_resolve_path(original_rvm_model_path())
     if wants_trt and is_mobile:
         try:
             if cache_status(model_key=TRT_MODEL_RVM, scope="offline") == "ready":
@@ -149,7 +150,7 @@ def _provider_summary(providers) -> str:
 def _resolve_matanyone2_model_dir(args, width: int = 0, height: int = 0) -> Path:
     supported_sizes = (512, 1024)
     if getattr(args, "model", ""):
-        model_dir = Path(args.model).resolve()
+        model_dir = safe_resolve_path(Path(args.model))
         manifest_path = model_dir / "manifest.json"
         if manifest_path.exists():
             manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
@@ -178,7 +179,7 @@ def _resolve_matanyone2_model_dir(args, width: int = 0, height: int = 0) -> Path
         if fallback.exists():
             print(f"[offline] warning: {model_dir} not found, falling back to {fallback}")
             return _resolve_matanyone2_model_dir(type("_Args", (), {"model": str(fallback)})())
-    return model_dir.resolve()
+    return safe_resolve_path(model_dir)
 
 
 def _patch_tempdir() -> None:
@@ -205,9 +206,9 @@ def _resolve_video(value: str) -> Path:
     p = Path(value)
     if not p.is_absolute():
         if p.exists():
-            return p.resolve()
+            return safe_resolve_path(p)
         p = config.VIDEO_DIR / p
-    return p.resolve()
+    return safe_resolve_path(p)
 
 
 def _default_out(src: Path, width: int = 0, height: int = 0) -> Path:
@@ -649,14 +650,14 @@ class RvmOfflineEngine(OfflineMattingEngine):
 def _make_engine(args) -> OfflineMattingEngine:
     name = args.engine
     if name == "rvm":
-        model_path = Path(args.model).resolve() if args.model else (config.ROOT / "models" / "rvm_mobilenetv3_fp32.onnx").resolve()
+        model_path = safe_resolve_path(Path(args.model)) if args.model else safe_resolve_path(config.ROOT / "models" / "rvm_mobilenetv3_fp32.onnx")
         return RvmOfflineEngine(model_path)
     if name == "matanyone2_onnx":
-        model_dir = Path(args._matanyone2_model_dir).resolve()
+        model_dir = safe_resolve_path(Path(args._matanyone2_model_dir))
         return SharedMatAnyone2OnnxEngine(
             model_dir,
-            Path(args.mask).resolve() if args.mask else None,
-            Path(args.sam3_model_dir).resolve(),
+            safe_resolve_path(Path(args.mask)) if args.mask else None,
+            safe_resolve_path(Path(args.sam3_model_dir)),
             _matanyone2_session_providers,
             sam3_prompt=args.sam3_prompt,
             bootstrap_threshold=args.matanyone2_bootstrap_threshold,
@@ -762,7 +763,7 @@ def _precompute_sam3_segment_masks(args, src: Path, dec, source_fps: float, fps:
 
     def make_masker():
         return Sam3TextMasker(
-            Path(args.sam3_model_dir).resolve(),
+            safe_resolve_path(Path(args.sam3_model_dir)),
             args.sam3_prompt,
             providers,
             decoder_providers=decoder_providers,
@@ -773,7 +774,7 @@ def _precompute_sam3_segment_masks(args, src: Path, dec, source_fps: float, fps:
             low_memory=args.sam3_low_memory,
         )
     masks_by_start = {}
-    debug_dir = Path(args.sam3_debug_dir).resolve() if args.sam3_debug_dir else None
+    debug_dir = safe_resolve_path(Path(args.sam3_debug_dir)) if args.sam3_debug_dir else None
     if debug_dir is not None:
         debug_dir.mkdir(parents=True, exist_ok=True)
     print(
@@ -922,19 +923,19 @@ def _precompute_sam3_segment_masks_subprocess(args, src: Path, source_fps: float
     if getattr(sys, "frozen", False):
         cmd = [sys.executable, "tool", "offline_passthrough"]
     else:
-        cmd = [sys.executable, str(Path(__file__).resolve())]
+        cmd = [sys.executable, str(Path(__file__).absolute())]
     cmd += [
         str(src),
         "--engine",
         "matanyone2_onnx",
         "--model",
-        str(Path(args._matanyone2_model_dir).resolve()),
+        str(safe_resolve_path(Path(args._matanyone2_model_dir))),
         "--matanyone2-size",
         str(args.matanyone2_size),
         "--matanyone2-batch",
         str(args.matanyone2_batch),
         "--sam3-model-dir",
-        str(Path(args.sam3_model_dir).resolve()),
+        str(safe_resolve_path(Path(args.sam3_model_dir))),
         "--sam3-prompt",
         str(args.sam3_prompt),
         "--sam3-score-threshold",
@@ -981,7 +982,7 @@ def _precompute_sam3_segment_masks_subprocess(args, src: Path, source_fps: float
         str(result_path),
     ]
     if args.sam3_debug_dir:
-        cmd += ["--sam3-debug-dir", str(Path(args.sam3_debug_dir).resolve())]
+        cmd += ["--sam3-debug-dir", str(safe_resolve_path(Path(args.sam3_debug_dir)))]
     if not args.sam3_cut_on_count_change:
         cmd += ["--no-sam3-cut-on-count-change"]
     if args.sam3_cut_every_active_sample:
@@ -1305,7 +1306,7 @@ def main() -> int:
         int(getattr(meta.codec, "height", 0) or 0),
     )
     if not out.is_absolute():
-        out = (config.ROOT / out).resolve()
+        out = safe_resolve_path(config.ROOT / out)
     out.parent.mkdir(parents=True, exist_ok=True)
     final_out = out
     if args.audio != "off":
@@ -1432,22 +1433,22 @@ def main() -> int:
     else:
         sam3_masks, segment_starts = _precompute_sam3_segment_masks(args, src, dec, source_fps, fps, target)
     if args.y26br_prepass_out:
-        _write_y26br_prepass_result(Path(args.y26br_prepass_out).resolve(), sam3_masks, segment_starts)
+        _write_y26br_prepass_result(safe_resolve_path(Path(args.y26br_prepass_out)), sam3_masks, segment_starts)
         _cleanup_audio_sidecar(audio_sidecar)
         dec.stop()
         return 0
     if args.y26es_prepass_out:
-        _write_y26es_prepass_result(Path(args.y26es_prepass_out).resolve(), sam3_masks, segment_starts)
+        _write_y26es_prepass_result(safe_resolve_path(Path(args.y26es_prepass_out)), sam3_masks, segment_starts)
         _cleanup_audio_sidecar(audio_sidecar)
         dec.stop()
         return 0
     if args.ywes_prepass_out:
-        _write_ywes_prepass_result(Path(args.ywes_prepass_out).resolve(), sam3_masks, segment_starts)
+        _write_ywes_prepass_result(safe_resolve_path(Path(args.ywes_prepass_out)), sam3_masks, segment_starts)
         _cleanup_audio_sidecar(audio_sidecar)
         dec.stop()
         return 0
     if args.sam3_prepass_out:
-        _write_sam3_prepass_result(Path(args.sam3_prepass_out).resolve(), sam3_masks, segment_starts)
+        _write_sam3_prepass_result(safe_resolve_path(Path(args.sam3_prepass_out)), sam3_masks, segment_starts)
         _cleanup_audio_sidecar(audio_sidecar)
         dec.stop()
         return 0

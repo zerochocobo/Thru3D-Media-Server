@@ -20,7 +20,7 @@ import cv2
 import numpy as np
 import onnxruntime as ort
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).absolute().parent.parent
 
 
 def _decode_frame_at(path: Path, time_sec: float) -> np.ndarray:
@@ -145,7 +145,7 @@ def main() -> int:
     parser.add_argument("--save-dir", default="")
     args = parser.parse_args()
 
-    src = Path(args.video).resolve()
+    src = Path(args.video).absolute()
     if not src.exists():
         print(f"video not found: {src}", file=sys.stderr)
         return 1
@@ -157,7 +157,7 @@ def main() -> int:
     right = sbs[:, half:half * 2]
     print(f"[probe] frame {w}x{h} -> left {left.shape[1]}x{left.shape[0]} / right {right.shape[1]}x{right.shape[0]}")
 
-    save_dir = Path(args.save_dir).resolve() if args.save_dir else None
+    save_dir = Path(args.save_dir).absolute() if args.save_dir else None
     if save_dir is not None:
         save_dir.mkdir(parents=True, exist_ok=True)
         cv2.imwrite(str(save_dir / "left.png"), cv2.cvtColor(left, cv2.COLOR_RGB2BGR))

@@ -14,6 +14,7 @@ import numpy as np
 import onnxruntime as ort
 
 import config
+from media_library import safe_resolve_path
 from offline.decoded_frames import decoded_frame_to_sbs_eye_rgbs, scene_bgr_from_rgb
 from utils.scene_detection import SceneCutDetector
 from utils.subprocess_hidden import hidden_subprocess_kwargs, run_hidden_streaming
@@ -477,8 +478,8 @@ def precompute_segment_masks(args, src: Path, dec, source_fps: float, fps: float
         else 0
     )
     masker = YoloWorldEfficientSamMasker(
-        Path(getattr(args, "ywes_model_dir", config.ROOT / "models" / "yoloworld_efficientsam")).resolve(),
-        Path(getattr(args, "ywes_txt_feats", config.ROOT / "models" / "person_txt_feats.npy")).resolve(),
+        safe_resolve_path(Path(getattr(args, "ywes_model_dir", config.ROOT / "models" / "yoloworld_efficientsam"))),
+        safe_resolve_path(Path(getattr(args, "ywes_txt_feats", config.ROOT / "models" / "person_txt_feats.npy"))),
         provider=str(getattr(args, "ywes_provider", "cuda")),
         yolo_model=str(getattr(args, "ywes_yolo_model", "yolov8l-worldv2.onnx")),
         sam_model=str(getattr(args, "ywes_sam_model", "efficientsam_s.onnx")),
@@ -488,7 +489,7 @@ def precompute_segment_masks(args, src: Path, dec, source_fps: float, fps: float
         box_expand=float(getattr(args, "ywes_box_expand", 0.08)),
         top_k=int(getattr(args, "ywes_top_k", 1)),
     )
-    debug_dir = Path(args.ywes_debug_dir).resolve() if getattr(args, "ywes_debug_dir", "") else None
+    debug_dir = safe_resolve_path(Path(args.ywes_debug_dir)) if getattr(args, "ywes_debug_dir", "") else None
     if debug_dir:
         debug_dir.mkdir(parents=True, exist_ok=True)
     print(
@@ -633,12 +634,12 @@ def precompute_segment_masks_subprocess(args, src: Path, source_fps: float, fps:
     cmd += [
         str(src),
         "--engine", "matanyone2_onnx",
-        "--model", str(Path(args._matanyone2_model_dir).resolve()),
+        "--model", str(safe_resolve_path(Path(args._matanyone2_model_dir))),
         "--matanyone2-size", str(args.matanyone2_size),
         "--matanyone2-batch", str(args.matanyone2_batch),
         "--matanyone2-prepass", "yoloworld_efficientsam",
-        "--ywes-model-dir", str(Path(args.ywes_model_dir).resolve()),
-        "--ywes-txt-feats", str(Path(args.ywes_txt_feats).resolve()),
+        "--ywes-model-dir", str(safe_resolve_path(Path(args.ywes_model_dir))),
+        "--ywes-txt-feats", str(safe_resolve_path(Path(args.ywes_txt_feats))),
         "--ywes-provider", str(args.ywes_provider),
         "--ywes-yolo-model", str(args.ywes_yolo_model),
         "--ywes-sam-model", str(args.ywes_sam_model),
@@ -658,7 +659,7 @@ def precompute_segment_masks_subprocess(args, src: Path, source_fps: float, fps:
         "--ywes-prepass-out", str(result_path),
     ]
     if getattr(args, "ywes_debug_dir", ""):
-        cmd += ["--ywes-debug-dir", str(Path(args.ywes_debug_dir).resolve())]
+        cmd += ["--ywes-debug-dir", str(safe_resolve_path(Path(args.ywes_debug_dir)))]
     if not bool(getattr(args, "ywes_cut_on_count_change", True)):
         cmd += ["--no-ywes-cut-on-count-change"]
     if bool(getattr(args, "ywes_cut_every_active_sample", False)):

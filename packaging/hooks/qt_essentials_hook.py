@@ -8,7 +8,7 @@ from PyInstaller.utils.hooks.qt import add_qt6_dependencies, pyside6_library_inf
 def collect(module_file: str):
     info = pyside6_library_info
     _ = info.location
-    package_dir = Path(info.package_location).resolve()
+    package_dir = Path(info.package_location).absolute()
     if (package_dir / "plugins").is_dir():
         loc = info.location
         loc["PrefixPath"] = str(package_dir)

@@ -4,6 +4,14 @@ This file only keeps version releases, major bug fixes, major UI/UX updates, and
 
 ## English
 
+### 2026-10-15
+
+- **Mapped-drive paths across runtime workflows:** Fixed WinError 1005 from Windows real-path queries on virtual drives such as 115. Single-file, batch, and segmented offline conversion now use safe path resolution for inputs, outputs, and concat lists; the shared fallback also covers media playback, subtitles, converted-file discovery, model loading, GPU/runtime caches, UI resources, and frozen-process startup. Ordinary paths retain canonical resolution, while unsupported virtual volumes retain their accessible drive-letter paths. Cache deletion still requires strict target validation.
+- **GPU compilation with Unicode temporary paths:** Added writable ASCII temporary-directory selection for Windows NVRTC when the configured path contains Chinese or other non-ASCII characters. The effective path is shared with offline tools so retained CuPy source files remain available during compilation; media, output, and other configured paths are preserved.
+- **Face Beauty and VR GPU memory safety:** Clamped all bilinear sampling indices in face crops and VR reprojection, including the second sampling taps at negative coordinates and per-eye boundaries. Replaced potentially aliased 8-bit/10-bit decoded-frame copies with independently owned GPU memory. Correctly pass CUDA stream 0 to ONNX Runtime and use supported provider options to preserve TensorRT selection. These fixes address proven memory/stream defects that can cause CUDA illegal-memory-access failures.
+- **Virtual MP4 failure diagnostics:** Frame-filler failures now include effect mode, frame cursor, and a full traceback alongside the existing failure reason, preserving processor release and completion signaling for subsequent requests.
+- **Shared website privacy policy:** Updated the Chinese, English, and Japanese policy to cover iOS and visionOS, distinguish iOS rear-camera processing from headset system passthrough, and clarify temporary camera-frame use, platform permissions, and data deletion.
+
 ### 2026-10-11
 
 - **Alpha matte start-up stability:** Realtime live and virtual-file playback now prime the RVM recurrent state on the first frame after each start or seek (`PT_RVM_START_PRIME_FRAMES`, default 16, 0 disables). On an 8K VR test clip, first-frame matte error against a warmed state fell from 0.019 to 0.007, at a one-time start-up cost of about 0.3–0.5 s. Thumbnails, warmup, offline tools, and mid-stream scene-cut resets are unchanged.
@@ -392,6 +400,14 @@ This file only keeps version releases, major bug fixes, major UI/UX updates, and
 - **Core update:** Added initial DLNA time-seek metadata, passthrough HEAD support, and `PT_CONTAINER` support for MP4 and MPEG-TS passthrough output.
 
 ## 中文
+
+### 2026-10-15
+
+- **运行链路映射盘路径兼容：** 修复115等虚拟映射盘在Windows真实路径查询时触发WinError 1005的问题。单文件、批量、多片段离线转换的输入、输出与concat清单统一使用安全路径解析；共享回退同时覆盖媒体播放、字幕、成品发现、模型加载、GPU/运行缓存、UI资源及冻结程序启动。普通路径继续使用规范路径，不支持真实路径查询的虚拟卷保留可访问盘符；缓存永久删除仍执行严格目标校验。
+- **中文临时路径GPU编译：** Windows NVRTC在配置路径包含中文等非ASCII字符时，自动选择可写的ASCII编译临时目录，并同步给离线工具，确保CuPy保留的源码在编译期间可用；媒体、输出及其他配置路径继续保留。
+- **美颜与VR显存安全：** 对人脸裁剪和VR重投影的全部双线性采样索引进行边界限制，覆盖负坐标时的右/下采样点与左右眼边界。8bit/10bit解码帧复制改为独立持有显存，避免复用解码表面；正确向ONNX Runtime传入CUDA默认流0，并使用受支持的provider选项保留TensorRT选择。修复已证实可能引发CUDA非法内存访问的显存/流缺陷。
+- **虚拟MP4失败诊断：** 视频帧填充失败日志在已有原因之外增加效果模式、帧位置及完整异常堆栈，保留处理器归还与完成信号，便于后续请求接管和故障定位。
+- **官网共用隐私政策：** 中、英、日三语政策补充iOS与visionOS，区分iOS后置相机处理和头显系统透视，并明确相机画面的临时使用、平台权限与数据删除方式。
 
 ### 2026-10-11
 

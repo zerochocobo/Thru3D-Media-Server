@@ -18,9 +18,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from pipeline.pynv_io import GpuNv12Frame, GpuP016Frame, PyNvSimpleDecoder  # noqa: E402
 from utils.video_metadata import probe_video_metadata  # noqa: E402
 
@@ -44,11 +45,11 @@ def _configure_local_temp() -> None:
 def _resolve_video(value: str) -> Path:
     p = Path(value)
     if p.is_absolute():
-        return p.resolve()
-    root_relative = (config.ROOT / p).resolve()
+        return safe_resolve_path(p)
+    root_relative = safe_resolve_path(config.ROOT / p)
     if root_relative.exists():
         return root_relative
-    return (config.VIDEO_DIR / p).resolve()
+    return safe_resolve_path(config.VIDEO_DIR / p)
 
 
 def _frame_from_raw(raw: Any, width: int, height: int, bit_depth: int):
@@ -84,7 +85,7 @@ def _build_simple_map(src: Path, max_index: int, gpu: int, bit_depth: int) -> di
 def _write_json(path_value: str, data: dict[str, Any]) -> None:
     path = Path(path_value)
     if not path.is_absolute():
-        path = (config.ROOT / path).resolve()
+        path = safe_resolve_path(config.ROOT / path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"[pynv-map] wrote json {path}")
@@ -93,7 +94,7 @@ def _write_json(path_value: str, data: dict[str, Any]) -> None:
 def _write_md(path_value: str, text: str) -> None:
     path = Path(path_value)
     if not path.is_absolute():
-        path = (config.ROOT / path).resolve()
+        path = safe_resolve_path(config.ROOT / path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8-sig")
     print(f"[pynv-map] wrote md {path}")

@@ -6,11 +6,12 @@ import csv
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import numpy as np  # noqa: E402
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from pipeline.alpha_packer import AlphaPacker  # noqa: E402
 from pipeline.matting import get_matter  # noqa: E402
 from pipeline.pynv_io import GpuP016Frame, PyNvSimpleDecoder  # noqa: E402
@@ -24,11 +25,11 @@ configure_gpu_runtime_cache()
 def _resolve_video(value: str) -> Path:
     path = Path(value)
     if path.exists():
-        return path.resolve()
-    candidate = (config.ROOT / value).resolve()
+        return safe_resolve_path(path)
+    candidate = safe_resolve_path(config.ROOT / value)
     if candidate.exists():
         return candidate
-    candidate = (config.VIDEO_DIR / value).resolve()
+    candidate = safe_resolve_path(config.VIDEO_DIR / value)
     if candidate.exists():
         return candidate
     raise FileNotFoundError(value)
@@ -97,10 +98,10 @@ def main() -> int:
     args = parser.parse_args()
 
     src = _resolve_video(args.video)
-    out_dir = Path(args.out_dir).resolve() / src.stem
+    out_dir = safe_resolve_path(Path(args.out_dir)) / src.stem
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    config.MODEL_PATH = str(Path(args.model).resolve())
+    config.MODEL_PATH = str(safe_resolve_path(Path(args.model)))
     config.MATTING_INPUT_SIZE = int(args.input_size)
     config.RVM_DOWNSAMPLE_RATIO = float(args.rvm_downsample_ratio)
     config.MATTING_WARMUP_RUNS = 0

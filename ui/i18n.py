@@ -5,7 +5,7 @@ import locale
 import sys
 from pathlib import Path
 
-TRANSLATION_DIR = Path(__file__).resolve().parent / "translations"
+TRANSLATION_DIR = Path(__file__).absolute().parent / "translations"
 SUPPORTED = ("zh_CN", "en_US", "ja_JP")
 
 

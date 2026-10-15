@@ -49,7 +49,7 @@ import torch.nn as nn
 
 # --- Locations -------------------------------------------------------------
 # Prefer this repository's upstream checkout; retain the old vendor fallback.
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).absolute().parent.parent
 DEFAULT_TOOLBOX = Path(r"G:/GIT/debug/VR_Video_Toolbox_NE")
 DEFAULT_VENDOR = PROJECT_ROOT / "reference" / "da3"
 if not DEFAULT_VENDOR.exists():

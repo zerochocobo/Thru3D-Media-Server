@@ -19,6 +19,8 @@ from collections.abc import Iterator, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
+from media_library import safe_resolve_path
+
 from pipeline.si_virtual_mp4 import (
     MediaSample,
     _box,
@@ -1004,7 +1006,7 @@ def _slot_cache_digest(
     st = _source_stat_dict(layout.source_path)
     raw = {
         "schema": _SLOT_CACHE_SCHEMA,
-        "source": str(layout.source_path.resolve()),
+        "source": str(safe_resolve_path(layout.source_path)),
         "source_stat": st,
         "output_mode": str(output_mode or "green").lower(),
         "fps": round(float(fps or 0.0), 6),
@@ -1116,7 +1118,7 @@ def _write_manifest_atomic(path: Path, manifest: dict) -> None:
 
 
 def _manifest_write_lock(path: Path) -> threading.RLock:
-    key = str(Path(path).resolve()).lower()
+    key = str(safe_resolve_path(Path(path))).lower()
     with _manifest_write_locks_guard:
         lock = _manifest_write_locks.get(key)
         if lock is None:

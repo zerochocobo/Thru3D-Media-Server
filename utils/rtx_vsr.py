@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 import config
+from media_library import safe_resolve_path
 from utils.subprocess_hidden import hidden_subprocess_kwargs
 from utils.vr_naming import is_half_equirectangular_source
 
@@ -80,17 +81,14 @@ def runtime_candidates() -> list[Path]:
     if configured:
         candidates.append(Path(configured).expanduser())
     if getattr(sys, "frozen", False):
-        base = Path(sys.executable).resolve().parent
+        base = safe_resolve_path(Path(sys.executable)).parent
         candidates.extend((base / "models" / "rtx_vsr" / "runtime", base / "_internal" / "models" / "rtx_vsr" / "runtime"))
     else:
         candidates.append(config.ROOT / "models" / "rtx_vsr" / "runtime")
     out: list[Path] = []
     seen: set[str] = set()
     for path in candidates:
-        try:
-            path = path.resolve()
-        except OSError:
-            continue
+        path = safe_resolve_path(path)
         key = str(path).casefold()
         if key not in seen:
             seen.add(key)
@@ -567,7 +565,7 @@ def run_evaluation_preflight(*, timeout_sec: float | None = None, gpu_index: int
         timeout = float(timeout_sec or config.RTX_VSR_EVALUATE_TIMEOUT_SEC)
         if getattr(sys, "frozen", False):
             command = [sys.executable, "tool", "rtx_vsr_probe", "--evaluate", "--gpu", str(int(gpu_index))]
-            cwd = str(Path(sys.executable).resolve().parent)
+            cwd = str(safe_resolve_path(Path(sys.executable)).parent)
         else:
             command = [sys.executable, "-m", "tools.rtx_vsr_probe", "--evaluate", "--gpu", str(int(gpu_index))]
             cwd = str(config.ROOT)

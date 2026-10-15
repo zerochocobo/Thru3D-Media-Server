@@ -20,9 +20,10 @@ from typing import Any
 from urllib.error import URLError
 from urllib.request import urlopen
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from tools import dlna_client_probe  # noqa: E402
 from ui.services.process_helpers import base_environment  # noqa: E402
 
@@ -56,13 +57,13 @@ class ServerRun:
 def _resolve_video(value: str) -> Path:
     p = Path(value)
     if p.is_absolute():
-        return p.resolve()
-    root_relative = (config.ROOT / p).resolve()
+        return safe_resolve_path(p)
+    root_relative = safe_resolve_path(config.ROOT / p)
     if root_relative.exists():
         return root_relative
     if not p.is_absolute():
         p = config.VIDEO_DIR / p
-    return p.resolve()
+    return safe_resolve_path(p)
 
 
 def _write_json(path: Path, data: Any) -> None:
@@ -126,7 +127,7 @@ def _start_server(args: argparse.Namespace, video: Path, base_url: str) -> subpr
     env.setdefault("PT_STARTUP_GPU_WARMUP", "1")
     env.setdefault("PT_PASSTHROUGH_OUTPUT_MODE", "all" if args.prefer == "alpha" else "green")
     if args.video_dir:
-        env["PT_VIDEO_DIR"] = str(Path(args.video_dir).resolve())
+        env["PT_VIDEO_DIR"] = str(safe_resolve_path(Path(args.video_dir)))
     elif video.exists():
         env["PT_VIDEO_DIR"] = str(video.parent)
 

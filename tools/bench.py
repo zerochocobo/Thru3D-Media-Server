@@ -23,9 +23,10 @@ from pathlib import Path
 from urllib.parse import quote
 
 # Allow this script to import project modules when run from the repo root.
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 
 
 def _resolve_snapshot_path(value: str, name: str, frame_no: int) -> Path:
@@ -35,7 +36,7 @@ def _resolve_snapshot_path(value: str, name: str, frame_no: int) -> Path:
         stem = Path(name).stem
         p = config.ROOT / "debug_output" / f"{stem}_matting_frame_{frame_no}.png"
     if not p.is_absolute():
-        p = (config.ROOT / p).resolve()
+        p = safe_resolve_path(config.ROOT / p)
     return p
 
 
@@ -68,7 +69,7 @@ def _resolve_model_path(value: str) -> Path:
         p = p.with_suffix(".onnx")
     if not p.is_absolute():
         p = config.ROOT / "models" / p
-    return p.resolve()
+    return safe_resolve_path(p)
 
 
 def _apply_model_override(value: str) -> None:

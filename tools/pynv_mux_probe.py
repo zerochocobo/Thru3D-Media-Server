@@ -13,9 +13,10 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from pipeline.pynv_io import GpuNv12AppFrame  # noqa: E402
 from tools.pynv_encode_probe import _make_nv12_frame  # noqa: E402
 from utils.video_metadata import probe_color_metadata  # noqa: E402
@@ -55,7 +56,7 @@ def main() -> int:
 
     out = Path(args.out) if args.out else config.ROOT / "debug_output" / "pynv_mux_probe.mp4"
     if not out.is_absolute():
-        out = (config.ROOT / out).resolve()
+        out = safe_resolve_path(config.ROOT / out)
     out.parent.mkdir(parents=True, exist_ok=True)
     color_args = probe_color_metadata(Path(args.color_from)).ffmpeg_args() if args.color_from else []
 

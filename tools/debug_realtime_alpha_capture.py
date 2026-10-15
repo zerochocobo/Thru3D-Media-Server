@@ -9,13 +9,14 @@ import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 from ui.services.process_helpers import base_environment  # noqa: E402
 
 os.environ.update(base_environment())
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from utils.gpu_runtime_cache import configure_gpu_runtime_cache  # noqa: E402
 
 configure_gpu_runtime_cache()
@@ -50,8 +51,8 @@ from utils.video_metadata import probe_video_metadata  # noqa: E402
 
 
 async def _capture(args: argparse.Namespace) -> None:
-    src = Path(args.src).resolve()
-    out = Path(args.out).resolve()
+    src = safe_resolve_path(Path(args.src))
+    out = safe_resolve_path(Path(args.out))
     out.parent.mkdir(parents=True, exist_ok=True)
     matter = get_matter()
     active = matter.sess.get_providers()
@@ -110,7 +111,7 @@ def main() -> int:
     parser.add_argument("--bytes", type=int, default=8 * 1024 * 1024)
     args = parser.parse_args()
     asyncio.run(_capture(args))
-    _decode_first_frame(Path(args.out).resolve(), Path(args.frame).resolve())
+    _decode_first_frame(safe_resolve_path(Path(args.out)), safe_resolve_path(Path(args.frame)))
     return 0
 
 

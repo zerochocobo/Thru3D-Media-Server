@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Literal
 
 import config
+from media_library import safe_resolve_path
 from utils.subprocess_hidden import hidden_subprocess_kwargs
 
 CacheStatus = Literal["missing", "ready", "stale", "failed"]
@@ -52,9 +53,9 @@ def normalized_model_key(model_key: str | None = None) -> str:
 
 def cache_dir_for_model(model_key: str | None = None, cache_dir: Path | None = None, scope: str | None = None) -> Path:
     if cache_dir is not None:
-        return Path(cache_dir).resolve()
+        return safe_resolve_path(Path(cache_dir))
     key = normalized_model_key(model_key)
-    base = config.ONNX_TRT_ENGINE_CACHE_PATH.resolve()
+    base = safe_resolve_path(config.ONNX_TRT_ENGINE_CACHE_PATH)
     if key == TRT_MODEL_RVM and str(scope or "").strip().lower() == "offline":
         if base.name == "offline":
             return base
@@ -75,8 +76,8 @@ def shape_inferred_model_path(model_path: Path | None = None, cache_dir: Path | 
 
 
 def original_rvm_model_path() -> Path:
-    candidate = Path(config.ROOT / "models" / "rvm_mobilenetv3_fp32.onnx").resolve()
-    return candidate if candidate.exists() else Path(config.MODEL_PATH).resolve()
+    candidate = safe_resolve_path(Path(config.ROOT / "models" / "rvm_mobilenetv3_fp32.onnx"))
+    return candidate if candidate.exists() else safe_resolve_path(Path(config.MODEL_PATH))
 
 
 def matanyone2_model_key_for_size(size: int) -> str:
@@ -93,7 +94,7 @@ def matanyone2_model_dir(size: int | None = None) -> Path:
         key = MATANYONE2_MODEL_KEY
     else:
         key = matanyone2_model_key_for_size(size)
-    return (config.ROOT / "models" / key).resolve()
+    return safe_resolve_path(config.ROOT / "models" / key)
 
 
 def matanyone2_trt_source_model_path(size: int | None = None) -> Path:
@@ -101,16 +102,13 @@ def matanyone2_trt_source_model_path(size: int | None = None) -> Path:
 
 
 def matanyone2_trt_source_model_paths() -> dict[str, Path]:
-    return {key: (config.ROOT / "models" / key / MATANYONE2_TRT_ONNX_NAME).resolve() for key in MATANYONE2_MODEL_KEYS}
+    return {key: safe_resolve_path(config.ROOT / "models" / key / MATANYONE2_TRT_ONNX_NAME) for key in MATANYONE2_MODEL_KEYS}
 
 
 def matanyone2_model_key_for_dir(model_dir: Path) -> str:
-    try:
-        resolved = model_dir.resolve()
-    except OSError:
-        resolved = Path(model_dir)
+    resolved = safe_resolve_path(model_dir)
     for key in MATANYONE2_MODEL_KEYS:
-        if resolved == (config.ROOT / "models" / key).resolve():
+        if resolved == safe_resolve_path(config.ROOT / "models" / key):
             return key
     return ""
 
@@ -119,7 +117,7 @@ def matanyone2_trt_cache_dir_for_key(model_key: str, cache_dir: Path | None = No
     key = str(model_key or "").strip()
     if key not in MATANYONE2_MODEL_KEYS:
         raise ValueError(f"unsupported MatAnyone2 TensorRT model key: {model_key}")
-    root = Path(cache_dir).resolve() if cache_dir is not None else cache_dir_for_model(TRT_MODEL_MATANYONE2)
+    root = safe_resolve_path(Path(cache_dir)) if cache_dir is not None else cache_dir_for_model(TRT_MODEL_MATANYONE2)
     return root / key
 
 

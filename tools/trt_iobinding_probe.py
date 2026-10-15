@@ -12,7 +12,7 @@ import time
 import numpy as np
 import onnxruntime as ort
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).absolute().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -129,7 +129,7 @@ def main(argv: list[str] | None = None) -> int:
             label = f"{case}_{input_mode}_{output_mode}"
             cmd = [
                 sys.executable,
-                str(Path(__file__).resolve()),
+                str(Path(__file__).absolute()),
                 "--case",
                 case,
                 "--input",

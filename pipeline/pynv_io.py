@@ -178,8 +178,10 @@ class GpuNv12Frame:
         cp.cuda.Device().synchronize()
         y_src = self.y.as_cupy(cp.uint8).reshape(h, w)
         uv_src = self.uv.as_cupy(cp.uint8).reshape(h // 2, w)
-        y = cp.ascontiguousarray(y_src)
-        uv = cp.ascontiguousarray(uv_src)
+        # A contiguous decoded surface still belongs to PyNv. ascontiguousarray
+        # would return that same memory when the pitch already equals the width.
+        y = y_src.copy(order="C")
+        uv = uv_src.copy(order="C")
         cp.cuda.get_current_stream().synchronize()
         owner = (y, uv)
         return GpuNv12Frame(
@@ -235,8 +237,8 @@ class GpuP016Frame:
         cp.cuda.Device().synchronize()
         y_src = self.y.as_cupy(cp.uint16).reshape(h, w)
         uv_src = self.uv.as_cupy(cp.uint16).reshape(h // 2, w)
-        y = cp.ascontiguousarray(y_src)
-        uv = cp.ascontiguousarray(uv_src)
+        y = y_src.copy(order="C")
+        uv = uv_src.copy(order="C")
         cp.cuda.get_current_stream().synchronize()
         owner = (y, uv)
         return GpuP016Frame(

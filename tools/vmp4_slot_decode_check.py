@@ -120,7 +120,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--payload-file", type=Path, default=None, help="use this real slot_XXXXXX.bin as every slot payload")
     args = parser.parse_args(argv)
 
-    source = args.source.resolve()
+    source = args.source.absolute()
     if not source.is_file():
         print(f"ERROR: source not found: {source}", file=sys.stderr)
         return 2

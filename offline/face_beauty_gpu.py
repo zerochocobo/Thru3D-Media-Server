@@ -40,9 +40,10 @@ __device__ __forceinline__ void sample_rgb(
   int x0 = (int)floorf(fx), y0 = (int)floorf(fy);
   float ax = fx - x0, ay = fy - y0;
   int x1 = x0 + 1, y1 = y0 + 1;
-  if (x0 < 0) x0 = 0; if (y0 < 0) y0 = 0;
-  if (x1 > W - 1) x1 = W - 1; if (y1 > H - 1) y1 = H - 1;
-  if (x0 > W - 1) x0 = W - 1; if (y0 > H - 1) y0 = H - 1;
+  // Aligned face/landmark crops may extend past the image. Clamp every tap,
+  // including x1/y1 when the sample lies more than one pixel above or left.
+  x0 = max(0, min(x0, W - 1)); y0 = max(0, min(y0, H - 1));
+  x1 = max(0, min(x1, W - 1)); y1 = max(0, min(y1, H - 1));
   const unsigned char* s00 = src + (y0 * stride_w + x0) * 3;
   const unsigned char* s01 = src + (y0 * stride_w + x1) * 3;
   const unsigned char* s10 = src + (y1 * stride_w + x0) * 3;

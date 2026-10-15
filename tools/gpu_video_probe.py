@@ -14,9 +14,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 
 
 def _run(cmd: list[str], timeout: int = 30) -> tuple[int, str, str]:
@@ -146,7 +147,7 @@ def _resolve_video(value: str) -> Path | None:
     p = Path(value)
     if not p.is_absolute():
         p = config.VIDEO_DIR / p
-    return p.resolve()
+    return safe_resolve_path(p)
 
 
 def main() -> int:

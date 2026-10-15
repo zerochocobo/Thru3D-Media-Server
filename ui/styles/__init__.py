@@ -9,7 +9,7 @@ configure_qt_runtime_paths()
 from PySide6.QtGui import QFont
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).absolute().parent
 STYLE_PATH = ROOT / "app.qss"
 
 

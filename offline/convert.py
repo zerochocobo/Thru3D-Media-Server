@@ -14,11 +14,12 @@ import tempfile
 from pathlib import Path
 
 if __package__ in (None, ""):
-    project_root = Path(__file__).resolve().parents[1]
+    project_root = Path(__file__).absolute().parents[1]
     if str(project_root) not in sys.path:
         sys.path.insert(0, str(project_root))
 
 import config
+from media_library import safe_resolve_path
 from utils.offline_outputs import (
     discard_pending_output,
     is_internal_intermediate_name,
@@ -383,9 +384,9 @@ def _run_one(args: argparse.Namespace, src: Path) -> int:
             getattr(args, "source_projection", "auto"), getattr(args, "source_fov", 180))
     )
     if getattr(args, "out_dir", ""):
-        out = Path(args.out_dir).resolve() / default_out.name
+        out = safe_resolve_path(Path(args.out_dir)) / default_out.name
     else:
-        out = Path(args.out).resolve() if args.out else default_out
+        out = safe_resolve_path(Path(args.out)) if args.out else default_out
     if out.exists() and args.skip_existing:
         print(f"[offline] skip existing: {out}")
         return 0
@@ -485,7 +486,7 @@ def _validate_segments(segments: list[tuple[float, float]], total_duration: floa
 
 
 def _concat_file_line(path: Path) -> str:
-    text = str(path.resolve()).replace("\\", "/").replace("'", "\\'")
+    text = str(safe_resolve_path(path)).replace("\\", "/").replace("'", "\\'")
     return f"file '{text}'"
 
 
@@ -552,9 +553,9 @@ def _run_segments(args: argparse.Namespace, src: Path) -> int:
     height = int(getattr(meta.codec, "height", 0) or 0)
     default_out = _single_segments_out(src, args, segments, width, height)
     if getattr(args, "out_dir", ""):
-        out = Path(args.out_dir).resolve() / default_out.name
+        out = safe_resolve_path(Path(args.out_dir)) / default_out.name
     else:
-        out = Path(args.out).resolve() if args.out else default_out
+        out = safe_resolve_path(Path(args.out)) if args.out else default_out
     if out.exists() and args.skip_existing:
         print(f"[offline] skip existing: {out}")
         return 0
@@ -707,10 +708,10 @@ def main(argv: list[str] | None = None) -> int:
             return 2
     if args.command == "single":
         if getattr(args, "segments", None):
-            return _run_segments(args, Path(args.video).resolve())
-        return _run_one(args, Path(args.video).resolve())
+            return _run_segments(args, safe_resolve_path(Path(args.video)))
+        return _run_one(args, safe_resolve_path(Path(args.video)))
 
-    root = Path(args.directory).resolve()
+    root = safe_resolve_path(Path(args.directory))
     failures = 0
     files = _video_files(root, args.recursive)
     print(f"[offline] batch files={len(files)} root={root}", flush=True)

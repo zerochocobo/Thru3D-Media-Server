@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 import config
+from media_library import safe_resolve_path
 
 
 def apply_runtime_dll_paths(env: dict[str, str] | None = None) -> dict[str, str]:
@@ -25,7 +26,7 @@ def apply_runtime_dll_paths(env: dict[str, str] | None = None) -> dict[str, str]
 def _runtime_dll_candidates(env: dict[str, str]) -> list[Path]:
     candidates: list[Path] = []
     if getattr(sys, "frozen", False):
-        base = Path(sys.executable).resolve().parent
+        base = safe_resolve_path(Path(sys.executable)).parent
         for path in (base / "_internal" / "tensorrt_libs", base / "_internal"):
             if path.exists():
                 candidates.append(path)

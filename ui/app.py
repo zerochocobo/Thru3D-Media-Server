@@ -5,6 +5,8 @@ import sys
 import importlib.util
 from pathlib import Path
 
+from media_library import safe_resolve_path
+
 
 _QT_DLL_HANDLES: list[object] = []
 
@@ -14,9 +16,9 @@ def _module_dir(module_name: str) -> Path | None:
     if spec is None:
         return None
     if spec.origin:
-        return Path(spec.origin).resolve().parent
+        return safe_resolve_path(Path(spec.origin)).parent
     if spec.submodule_search_locations:
-        return Path(next(iter(spec.submodule_search_locations))).resolve()
+        return safe_resolve_path(Path(next(iter(spec.submodule_search_locations))))
     return None
 
 
@@ -26,7 +28,7 @@ def _prepare_qt_dll_paths() -> None:
     candidates: list[Path] = []
     plugin_roots: list[Path] = []
     if getattr(sys, "frozen", False):
-        base = Path(sys.executable).resolve().parent / "_internal"
+        base = safe_resolve_path(Path(sys.executable)).parent / "_internal"
         candidates.extend([base, base / "PySide6", base / "shiboken6"])
         plugin_roots.append(base / "PySide6" / "plugins")
     else:

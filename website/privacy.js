@@ -1,8 +1,8 @@
 (() => {
   const languages = {
-    en: { tag: "en", title: "Privacy Policy", home: "← Home", description: "Privacy policy for Thru3D Media Player on Meta Quest and PICO, and Thru3D Media Server for Windows." },
-    zh: { tag: "zh-CN", title: "隐私政策", home: "← 首页", description: "适用于 Meta Quest、PICO 版 Thru3D Media Player 及 Windows 版 Thru3D媒体服务器 的隐私政策。" },
-    ja: { tag: "ja", title: "プライバシーポリシー", home: "← ホーム", description: "Meta Quest・PICO 向け Thru3D Media Player と Windows 向け Thru3D Media Server のプライバシーポリシー。" },
+    en: { tag: "en", title: "Privacy Policy", home: "← Home", description: "Privacy policy for Thru3D Media Player on iOS, Apple Vision Pro (visionOS), Meta Quest and PICO, and Thru3D Media Server for Windows." },
+    zh: { tag: "zh-CN", title: "隐私政策", home: "← 首页", description: "适用于 iOS、Apple Vision Pro（visionOS）、Meta Quest、PICO 版 Thru3D Media Player 及 Windows 版 Thru3D媒体服务器的隐私政策。" },
+    ja: { tag: "ja", title: "プライバシーポリシー", home: "← ホーム", description: "iOS、Apple Vision Pro（visionOS）、Meta Quest・PICO 向け Thru3D Media Player と Windows 向け Thru3D Media Server のプライバシーポリシー。" },
   };
   const normalize = (value) => {
     const primary = String(value || "").toLowerCase().split(/[-_]/)[0];

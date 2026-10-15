@@ -13,12 +13,14 @@ import logging
 import os
 import subprocess
 import sys
+import tempfile
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable
 
 import config
+from media_library import safe_resolve_path
 from utils.logger import warmup_event
 from utils.startup_status import set_startup_phase, start_heartbeat, stop_heartbeat
 from utils.subprocess_hidden import hidden_subprocess_kwargs
@@ -147,14 +149,42 @@ class WarmupLock:
             pass
 
 
+def _native_compiler_tmp_dir(configured: Path) -> Path:
+    """Keep generated source paths compatible with Windows NVRTC."""
+    if os.name != "nt" or str(configured).isascii():
+        return configured
+    candidates = [config.ROOT / "runtime_cache" / "tmp"]
+    for name in ("LOCALAPPDATA", "TEMP", "TMP", "PROGRAMDATA"):
+        value = os.environ.get(name)
+        if value:
+            candidates.append(Path(value) / "Thru3D" / "runtime_cache" / "tmp")
+    candidates.append(Path(os.environ.get("SystemRoot", "C:/Windows")) / "Temp" / "Thru3D" / "runtime_cache" / "tmp")
+    for candidate in candidates:
+        candidate = safe_resolve_path(candidate)
+        if not str(candidate).isascii():
+            continue
+        try:
+            candidate.mkdir(parents=True, exist_ok=True)
+            with tempfile.TemporaryFile(dir=candidate):
+                pass
+        except OSError:
+            continue
+        log.warning("GPU compiler temporary directory requires an ASCII path; using %s instead of %s", candidate, configured)
+        return candidate
+    raise RuntimeError("GPU compiler needs a writable ASCII temporary path; set PT_RUNTIME_TMP_DIR accordingly")
+
+
 def configure_gpu_runtime_cache() -> GpuRuntimeCacheEnv:
     """Set CUDA/CuPy cache env vars before importing CUDA-heavy modules."""
-    runtime_dir = Path(config.RUNTIME_CACHE_DIR).resolve()
-    cuda_dir = Path(config.CUDA_CACHE_PATH).resolve()
-    cupy_dir = Path(config.CUPY_CACHE_DIR).resolve()
-    ort_dir = Path(config.ORT_CACHE_DIR).resolve()
-    marker_path = Path(config.GPU_WARMUP_MARKER).resolve()
-    tmp_dir = Path(config.RUNTIME_TMP_DIR).resolve()
+    runtime_dir = safe_resolve_path(Path(config.RUNTIME_CACHE_DIR))
+    cuda_dir = safe_resolve_path(Path(config.CUDA_CACHE_PATH))
+    cupy_dir = safe_resolve_path(Path(config.CUPY_CACHE_DIR))
+    ort_dir = safe_resolve_path(Path(config.ORT_CACHE_DIR))
+    marker_path = safe_resolve_path(Path(config.GPU_WARMUP_MARKER))
+    tmp_dir = _native_compiler_tmp_dir(safe_resolve_path(Path(config.RUNTIME_TMP_DIR)))
+    # Offline tools also read this value when retaining CuPy's generated .cu
+    # sources across the NVRTC call; keep them on the effective path too.
+    config.RUNTIME_TMP_DIR = tmp_dir
     runtime_dir.mkdir(parents=True, exist_ok=True)
     cuda_dir.mkdir(parents=True, exist_ok=True)
     cupy_dir.mkdir(parents=True, exist_ok=True)
@@ -228,7 +258,7 @@ def _providers_cuda_hash() -> str:
     try:
         import onnxruntime as ort
 
-        capi = Path(ort.__file__).resolve().parent / "capi"
+        capi = Path(ort.__file__).absolute().parent / "capi"
         candidates = sorted(capi.glob("onnxruntime_providers_cuda*.dll"))
         return _sha256_16(candidates[0]) if candidates else ""
     except Exception:
@@ -242,7 +272,7 @@ def build_warmup_key(shapes: Iterable[tuple[int, int, int, int]] | None = None) 
 
     props = cp.cuda.runtime.getDeviceProperties(0)
     name = props["name"].decode() if isinstance(props["name"], bytes) else str(props["name"])
-    model_path = Path(config.MODEL_PATH).resolve()
+    model_path = safe_resolve_path(Path(config.MODEL_PATH))
     shape_list = [list(s) for s in (shapes or default_warmup_shapes())]
     return GpuWarmupKey(
         gpu_name=name,

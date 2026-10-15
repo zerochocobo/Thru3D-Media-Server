@@ -14,9 +14,10 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).absolute().parents[1]))
 
 import config  # noqa: E402
+from media_library import safe_resolve_path
 from pipeline.pynv_io import GpuNv12AppFrame  # noqa: E402
 
 
@@ -87,7 +88,7 @@ def main() -> int:
 
     out = Path(args.out) if args.out else config.ROOT / "debug_output" / "pynv_encode_probe.h264"
     if not out.is_absolute():
-        out = (config.ROOT / out).resolve()
+        out = safe_resolve_path(config.ROOT / out)
     out.parent.mkdir(parents=True, exist_ok=True)
 
     enc_kwargs = {

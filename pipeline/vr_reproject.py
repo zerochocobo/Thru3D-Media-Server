@@ -51,9 +51,9 @@ __device__ __forceinline__ void sample_eye(
   int x0 = (int)floorf(sx), y0 = (int)floorf(sy);
   float ax = sx - x0, ay = sy - y0;
   int x1 = x0 + 1, y1 = y0 + 1;
-  if (x0 < 0) x0 = 0; if (y0 < 0) y0 = 0;
-  if (x1 > ew - 1) x1 = ew - 1; if (y1 > eh - 1) y1 = eh - 1;
-  if (x0 > ew - 1) x0 = ew - 1; if (y0 > eh - 1) y0 = eh - 1;
+  // A flat view may look beyond this hemisphere: keep all taps in this eye.
+  x0 = max(0, min(x0, ew - 1)); y0 = max(0, min(y0, eh - 1));
+  x1 = max(0, min(x1, ew - 1)); y1 = max(0, min(y1, eh - 1));
   const unsigned char* s00 = src + ((eye_y0 + y0) * src_stride_w + (eye_x0 + x0)) * 3;
   const unsigned char* s01 = src + ((eye_y0 + y0) * src_stride_w + (eye_x0 + x1)) * 3;
   const unsigned char* s10 = src + ((eye_y0 + y1) * src_stride_w + (eye_x0 + x0)) * 3;
